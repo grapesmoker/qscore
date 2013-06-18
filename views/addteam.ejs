@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> <%= title %> </title>
+		<% include header %>
+	</head>
+	<body>
+		<h1> <%= title %> </h1>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<% include sidebar %>
+				<div class="span10">
+					<% if (state != '') {
+						if (state == 'error') { %>
+							<div class="alert alert-error">
+								<%= message %>
+							</div>
+					<%  }
+						else { %>
+							<div class="alert alert-success">
+								<%= message %>
+							</div>
+					<% }
+					} %>
+					<form class="form-horizontal" action="/addteam" method="post">
+						<fieldset>
+							<legend>
+								Create New Team
+							</legend>
+							<div class="control-group">
+								<label class="control-label" for="team-name">Team Name</label>
+								<div class="controls">
+									<input type="text" class="input-xlarge" id="team-name" name="teamName">
+									<p class="help-block">
+										Be sure to include the letter if you have multiple teams, e.g. LASA B
+									</p>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="tournament">Tournament</label>
+								<div class="controls">
+									<select class="input-xlarge">
+										<%
+										if (typeof tournaments != 'undefined') {
+											tournaments.forEach(function(tournament) {
+										%>
+												<option value="<%= tournament._id %>"><%= tournament.tourName %></option>
+										<%
+											}
+										)};
+										%>
+									</select>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for ="team-roster">Team Roster</label>
+								<div class="controls">
+									<textarea class="input-xlarge" id="team-roster" name="teamRoster" rows="5"></textarea>
+									<p class="help-block">
+										Please enter your team roster, one player per line.
+									</p>
+								</div>
+							</div>
+							<div class="form-actions">
+            					<button type="submit" class="btn btn-primary">Save changes</button>
+            					<button class="btn">Cancel</button>
+          					</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

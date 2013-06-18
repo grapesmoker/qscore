@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	<%= title %>
+    </title>
+    <% include header %>
+  </head>
+  <body>
+    <h1>
+    	<%= title %>
+    </h1>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<% include sidebar %>
+			<div class="span10">
+				<% if (state != '') {
+					if (state == 'error') { %>
+						<div class="alert alert-error">
+							<%= message %>
+						</div>
+				<%  }
+					else { %>
+						<div class="alert alert-success">
+							<%= message %>
+						</div>
+				<% }
+				} %>
+				<form class="form-inline" action="/playgame" method="post">
+					<legend>Select teams</legend>
+					<fieldset>
+						<div class="control-group">
+							<div class="controls">
+								<label for="team1">Team 1</label>
+								<select id="team1" name="team1">
+									<% if (typeof teams != 'undefined') {
+										teams.forEach(function(team) { %>
+											<option value="<%= team._id %>"><%= team.teamName %></option>
+									<%	})
+									} %>
+								</select>
+								<label for="team2">Team 2</label>
+								<select id="team2" name="team2">
+									<% if (typeof teams != 'undefined') {
+										teams.forEach(function(team) { %>
+											<option value="<%= team._id %>"><%= team.teamName %></option>
+									<%	})
+									} %>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="tour">Tournament</label>
+							<div class="controls">
+								
+								<select id="tour" name="tour">
+									<% if (typeof tournaments != 'undefined') {
+										tournaments.forEach(function(tournament) { %>
+											<option value="<%= tournament._id %>"><%= tournament.tourName %></option>
+									<% 	})
+									} %>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="round">Round</label>
+							<div class="controls">
+								<input type="number" id="round" name="round">
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="round">Room</label>
+							<div class="controls">
+								<input type="text" id="room" name="room">
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="moderator">Moderator</label>
+							<div class="controls">
+								<input type="text" id="moderator" name="moderator">
+							</div>
+						</div>
+						
+						<div class="form-actions">
+            				<button type="submit" class="btn btn-primary">Start game</button>
+            				<button class="btn">Cancel</button>
+          				</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

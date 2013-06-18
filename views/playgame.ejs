@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	<%= title %>
+    </title>
+    <% include header %>
+  </head>
+  <body>
+    <h1>
+    	<%= title %>
+    </h1>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<% include sidebar %>
+			<div class="span10">
+				<h3>
+					<% 
+					if (typeof team_rosters != 'undefined') {
+					%><%= team_rosters[0].teamName %> vs. <%= team_rosters[1].teamName %>
+					<%
+					}
+					%>
+				</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Question</th>
+							<th colspan="<%= team_rosters[0].teamRoster.length + 2 %>"><%= team_rosters[0].teamName %></th>
+							<th colspan="<%= team_rosters[1].teamRoster.length + 2 %>"><%= team_rosters[1].teamName %></th>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<%
+							team_rosters[0].teamRoster.forEach(function (player) {
+								if (typeof player != 'undefined') {
+								%>
+									<th><%= player.firstName + ' ' + player.lastName %></th>
+								<%
+								}
+							}) %>
+							
+							<th>Bonus Points</th>
+							<th>Running Total</th>
+							
+							<%
+							team_rosters[1].teamRoster.forEach(function (player) {
+							%>
+								<th><%= player.firstName + ' ' + player.lastName %></th>
+							<%
+							}) %>
+							
+							<th>Bonus Points</th>
+							<th>Running Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<%
+						var numPlayers1 = team_rosters[0].teamRoster.length;
+						var numPlayers2 = team_rosters[1].teamRoster.length;
+						for (var i = 1; i < 21; i++) {
+						%>
+							<tr>
+							<td><%= i %></td>
+						<%
+							for (var j = 1; j < numPlayers1 + 1; j ++) {
+						%>
+								<td align="center" class="player-score" id="player_score_A_<%= i %>_<%= j %>">
+									
+								</td>
+						<%
+							}
+						%>
+							<td align="center" class="bonus-score" id="bonus_score_A_<%= i %>">
+								
+							</td>
+							<td align="center" class="running-total" id="running_total_A_<%= i %>">
+								
+							</td>
+						<%	
+							for (var j = 1; j < numPlayers2 + 1; j ++) {
+						%>
+								<td align="center" class="pagination-centered player-score" id="player_score_B_<%= i %>_<%= j %>">
+									
+								</td>
+						<%
+							}
+						%>
+							<td align="center" class="bonus-score" id="bonus_score_B_<%= i %>">
+								
+							</td>
+							<td align="center" class="running-total" id="running_total_B_<%= i %>">
+								
+							</td>
+							</tr>
+						<%
+						}
+						%>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

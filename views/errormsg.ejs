@@ -1,0 +1,12 @@
+<% if (state != '') {
+	if (state == 'error') { %>
+		<div class="alert alert-error">
+			<%= message %>
+		</div>
+<%  }
+else { %>
+	<div class="alert alert-success">
+		<%= message %>
+	</div>
+<% }
+} %>
