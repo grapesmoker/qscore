@@ -22,6 +22,7 @@
 					}
 					%>
 				</h3>
+				<button class="btn btn-primary" id="savegame"><i class="ison-save"></i>Save game</button>
 				<table class="table">
 					<thead>
 						<tr>
@@ -35,7 +36,7 @@
 							team_rosters[0].teamRoster.forEach(function (player) {
 								if (typeof player != 'undefined') {
 								%>
-									<th><%= player.firstName + ' ' + player.lastName %></th>
+									<th class="user-name" data-user-id="<%= player._id %>"><%= player.firstName + ' ' + player.lastName %></th>
 								<%
 								}
 							}) %>
@@ -46,7 +47,7 @@
 							<%
 							team_rosters[1].teamRoster.forEach(function (player) {
 							%>
-								<th><%= player.firstName + ' ' + player.lastName %></th>
+								<th class="user-name" data-user-id="<%= player._id %>"><%= player.firstName + ' ' + player.lastName %></th>
 							<%
 							}) %>
 							
@@ -65,13 +66,15 @@
 						<%
 							for (var j = 1; j < numPlayers1 + 1; j ++) {
 						%>
-								<td align="center" class="player-score" id="player_score_A_<%= i %>_<%= j %>">
+								<td align="center" class="player-score player-id-<%= team_rosters[0].teamRoster[j -1]._id %>" 
+									data-question-num="<%= i %>" id="player_score_A_<%= i %>_<%= j %>">
 									
 								</td>
 						<%
 							}
 						%>
-							<td align="center" class="bonus-score" id="bonus_score_A_<%= i %>">
+							<td align="center" class="bonus-score team-id-<%= team_rosters[0]._id %>" 
+								data-question-num="<%= i %>" id="bonus_score_A_<%= i %>">
 								
 							</td>
 							<td align="center" class="running-total" id="running_total_A_<%= i %>">
@@ -80,13 +83,15 @@
 						<%	
 							for (var j = 1; j < numPlayers2 + 1; j ++) {
 						%>
-								<td align="center" class="pagination-centered player-score" id="player_score_B_<%= i %>_<%= j %>">
+								<td align="center" class="pagination-centered player-score player-id-<%= team_rosters[0].teamRoster[j -1]._id %>" 
+									data-question-num="<%= i %>" id="player_score_B_<%= i %>_<%= j %>">
 									
 								</td>
 						<%
 							}
 						%>
-							<td align="center" class="bonus-score" id="bonus_score_B_<%= i %>">
+							<td align="center" class="bonus-score team-id-<%= team_rosters[0]._id %>" 
+								data-question-num="<%= i %>" id="bonus_score_B_<%= i %>">
 								
 							</td>
 							<td align="center" class="running-total" id="running_total_B_<%= i %>">

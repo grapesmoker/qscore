@@ -14,7 +14,29 @@
 		<div class="row-fluid">
 			<% include sidebar %>
 			<div class="span10">
-				fooo
+				<%
+				if (typeof message != 'undefined') {
+				%>
+					<div class="alert alert-info">
+						<%= message %>
+					</div>
+				<%
+				}
+				%>
+				<%
+				if (!und.isUndefined(tournaments)) {
+				%>
+					<h3>Your Tournaments</h3>
+				<%
+					tournaments.forEach(function(tournament) {
+				%>
+						<p>
+							<a href="/viewtour/<%= tournament._id %>"><%= tournament.tourName %></a> - <%= tournament.secret %>
+						</p>
+				<%
+					});	
+				}
+				%>
 			</div>
 		</div>
 	</div>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	<%= title %>
+    </title>
+    <% include header %>
+  </head>
+  <body>
+    <h1>
+    	<%= title %>
+    </h1>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<% include sidebar %>
+			<div class="span10">
+				<%
+				if (typeof message != 'undefined') {
+				%>
+					<div class="alert alert-info">
+						<%= message %>
+					</div>
+				<%
+				}
+				%>
+				<%
+				if (typeof tournament != 'undefined' && tournament) {
+				%>
+					
+					<div class="btn-group">
+						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+							Tournament Actions
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Edit Tournament Info</a></li>
+							<li><a href="#">Edit Team Rosters</a></li>
+							<li><a href="#">Begin New Game</a></li>
+						</ul>
+					</div>
+					<div class="btn-group">
+						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+							Results
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Team Standings</a></li>
+							<li><a href="#">Individual Standings</a></li>
+							<li><a href="#">Result Matrix</a></li>
+						</ul>
+					</div>
+					
+					<p>
+						<h3><%= tournament.tourName %></h3>
+					</p>
+					<p>
+						<h4><%= tournament.tourDate %></h4>
+					</p>
+					<p>
+						<h4><%= tournament.tourLocation %></h4>
+					</p>
+					<%
+					if (typeof teams != 'undefined' && teams) {
+					%>
+						<p>
+							<h5>The following teams are participating in this tournament:</h5>
+						</p>
+					<%
+						teams.forEach(function(team) {
+					%>
+							<p>
+								<a href="/viewteam/<%= team._id %>"><%= team.teamName %></a>
+							</p>
+					<%
+						});
+					}
+					%>
+					
+				
+				<%
+				}
+				%>
+				
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
