@@ -22,13 +22,16 @@
 					}
 					%>
 				</h3>
-				<button class="btn btn-primary" id="savegame"><i class="ison-save"></i>Save game</button>
+				<button class="btn btn-primary" id="savegame" data-game-id="<%= game._id %>">
+					<i class="icon-file"></i>Save game</button>
 				<table class="table">
 					<thead>
 						<tr>
 							<th>Question</th>
-							<th colspan="<%= team_rosters[0].teamRoster.length + 2 %>"><%= team_rosters[0].teamName %></th>
-							<th colspan="<%= team_rosters[1].teamRoster.length + 2 %>"><%= team_rosters[1].teamName %></th>
+							<th class="team-name" data-team-id="<%= team_rosters[0]._id %>"
+								colspan="<%= team_rosters[0].teamRoster.length + 2 %>"><%= team_rosters[0].teamName %></th>
+							<th class="team-name" data-team-id="<%= team_rosters[1]._id %>" 
+								colspan="<%= team_rosters[1].teamRoster.length + 2 %>"><%= team_rosters[1].teamName %></th>
 						</tr>
 						<tr>
 							<td>&nbsp;</td>
