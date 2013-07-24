@@ -86,14 +86,14 @@
 						<%	
 							for (var j = 1; j < numPlayers2 + 1; j ++) {
 						%>
-								<td align="center" class="pagination-centered player-score player-id-<%= team_rosters[0].teamRoster[j -1]._id %>" 
+								<td align="center" class="pagination-centered player-score player-id-<%= team_rosters[1].teamRoster[j -1]._id %>" 
 									data-question-num="<%= i %>" id="player_score_B_<%= i %>_<%= j %>">
 									
 								</td>
 						<%
 							}
 						%>
-							<td align="center" class="bonus-score team-id-<%= team_rosters[0]._id %>" 
+							<td align="center" class="bonus-score team-id-<%= team_rosters[1]._id %>" 
 								data-question-num="<%= i %>" id="bonus_score_B_<%= i %>">
 								
 							</td>
