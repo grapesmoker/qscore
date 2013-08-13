@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	<%= title %>
+    </title>
+    <% include header %>
+  </head>
+  <body>
+    <h1>
+    	<%= title %>
+    </h1>
+    <% include menubar %>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<% include sidebar %>
+			<div class="span10">
+				<% include errormsg %>
+				<form class="form-horizontal" action="/viewteam" method="post">
+					<legend>View/Edit Team</legend>
+					<fieldset>
+						<div class="control-group">
+							<label class="control-label" for="tour-name">Team Name</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="team-name" name="teamName">
+								<p class="help-block">
+									Team name, e.g. Maryland A
+								</p>							
+							</div>
+						</div>
+						
+						<%
+						team.teamRoster.forEach(function(player, index) {
+						%>
+							<div class="control-group">
+								<label class="control-label">Player <%= index %></label>
+							</div>
+						<%
+						}
+						%>
+						
+						<div class="control-group">
+							<label class="control-label" for ="team-roster">Team Roster</label>
+							<div class="controls">
+								<textarea class="input-xlarge" id="team-roster" name="teamRoster" rows="5"></textarea>
+								<p class="help-block">
+									Please enter your team roster, one player per line.
+								</p>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
