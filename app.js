@@ -7,16 +7,24 @@ var flash = require('connect-flash')
   , express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
+  , qscore_ajax = require('./routes/qscore_ajax')
+  , mongoose = require('mongoose')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , forms = require('forms')
+  , fields = forms.fields
+  , validators = forms.validators;
 
 var app = express();
+
+mongoose.connect('mongodb://localhost/qscore_db');
 
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy;
 
 bcrypt = require('bcrypt');
 und = require('underscore');
+moment = require('moment');
 
 databaseUrl = "localhost/qscore_db";
 collections = ['players', 'teams', 'games', 'tournaments', 'users', 'playerScores', 'teamScores'];
@@ -26,6 +34,8 @@ step = require('step')
 
 //console.log(db);
 //db = require('mongojs').connect(databaseUrl, collections);
+
+var User = require('./models/users.js').User;
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -48,13 +58,16 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-	db.users.find({_id: db.ObjectId(id)}, function(err, user) {
+	/*db.users.find({_id: db.ObjectId(id)}, function(err, user) {
+		done(err, user);
+	});*/
+	User.findById(id, function(err, user) {
 		done(err, user);
 	});
 });
 
 passport.use(new LocalStrategy(function(username, password, done) {
-	db.users.findOne({username: username}, function(err, user) {
+	User.findOne({username: username}, function(err, user) {
 		if (err) {
 			return done(err);
 		}
@@ -87,10 +100,9 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/addteam', routes.addteam);
-app.post('/addteam', routes.addteam);
+app.all('/addteam', ensureAuthenticated, routes.addteam);
 app.get('/users', user.list);
-app.get('/newgame', routes.newgame);
+app.get('/newgame', ensureAuthenticated, routes.newgame);
 app.all('/newtour', ensureAuthenticated, routes.newtour);
 app.all('/playgame', routes.playgame);
 app.get('/login', user.login);
@@ -102,7 +114,10 @@ app.post('/login',
 		  });
 app.get('/viewtour/:id', routes.viewtour);
 app.post('/savegame', routes.savegame);
+app.get('/edittour/:id', routes.edittour);
+app.post('/edittour', routes.edittour);
 
+app.post('/get_team_from_id', qscore_ajax.get_team_from_id);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

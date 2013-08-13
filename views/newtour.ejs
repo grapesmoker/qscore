@@ -10,6 +10,7 @@
     <h1>
     	<%= title %>
     </h1>
+    <% include menubar %>
     <div class="container-fluid">
 		<div class="row-fluid">
 			<% include sidebar %>
@@ -50,6 +51,7 @@
 								</p>
 							</div>
 						</div>
+						<input type="hidden" name="returnTo" value="edittour">
 						<div class="form-actions">
             				<button type="submit" class="btn btn-primary">Create tournament</button>
             				<button class="btn">Cancel</button>

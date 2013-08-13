@@ -10,69 +10,98 @@
     <h1>
     	<%= title %>
     </h1>
+    <% include menubar %>
     <div class="container-fluid">
 		<div class="row-fluid">
 			<% include sidebar %>
 			<div class="span10">
-				<%
-				if (typeof message != 'undefined') {
-				%>
-					<div class="alert alert-info">
-						<%= message %>
-					</div>
-				<%
-				}
-				%>
+				<% include errormsg %>
 				<%
 				if (typeof tournament != 'undefined' && tournament) {
 				%>
-					
-					<div class="btn-group">
-						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-							Tournament Actions
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Edit Tournament Info</a></li>
-							<li><a href="#">Edit Team Rosters</a></li>
-							<li><a href="#">Begin New Game</a></li>
-						</ul>
-					</div>
-					<div class="btn-group">
-						<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-							Results
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Team Standings</a></li>
-							<li><a href="#">Individual Standings</a></li>
-							<li><a href="#">Result Matrix</a></li>
-						</ul>
-					</div>
 					
 					<p>
 						<h3><%= tournament.tourName %></h3>
 					</p>
 					<p>
-						<h4><%= tournament.tourDate %></h4>
+						<h4><%= moment(tournament.tourDate).format('dddd, MMMM D, YYYY') %></h4>
 					</p>
 					<p>
 						<h4><%= tournament.tourLocation %></h4>
 					</p>
+					<p>
+						<h5><%= tournament.tourAddress %></h5>
+					</p>
 					<%
-					if (typeof teams != 'undefined' && teams) {
+					if (!und.isUndefined(locals.teams) && teams) {
 					%>
-						<p>
-							<h5>The following teams are participating in this tournament:</h5>
-						</p>
+						<table class="table table-striped">
+							<caption>
+								Participating Teams
+							</caption>
+							<thead>
+								<tr>
+									<th>Team Name</th>
+									<th>Wins</th>
+									<th>Losses</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							<%
+								teams.forEach(function(team) {
+							%>
+								<tr>
+									<td><%= team.teamName %></td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>
+										<a href="/viewteam/<%= team._id %>">
+											<i class="icon-edit"></i>
+										</a>
+									</td>
+								</tr>
+								
+							<%
+								});
+							%>
+							</tbody>
+						</table>
 					<%
-						teams.forEach(function(team) {
+					}
+					
+					if (!und.isUndefined(locals.games) && games) {
 					%>
-							<p>
-								<a href="/viewteam/<%= team._id %>"><%= team.teamName %></a>
-							</p>
+						<table class="table table-striped">
+							<caption>Games</caption>
+							<thead>
+								<tr>
+									<th>Round</th>
+									<th>Team 1</th>
+									<th>Team 2</th>
+									<th>Score</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							<%
+							games.forEach(function(game) {
+							%>
+								<tr>
+									<td><%= game.round %></td>
+									<td><%= game.team1.teamName %></td>
+									<td><%= game.team2.teamName %></td>
+									<td>&nbsp;</td>
+									<td><a href="/viewgame/<%= game._id %>">
+										<i class="icon-edit"></i>
+									</a></td>
+								</tr>
+							<%
+							});
+							%>
+							</tbody>
+						</table>
 					<%
-						});
 					}
 					%>
 					

@@ -1,4 +1,4 @@
-<% if (state != '') {
+<% if (!und.isUndefined(locals.state) && state != '' && !und.isUndefined(locals.message) && message != '') {
 	if (state == 'error') { %>
 		<div class="alert alert-error">
 			<%= message %>

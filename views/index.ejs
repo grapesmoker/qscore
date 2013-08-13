@@ -10,6 +10,7 @@
     <h1>
     	<%= title %>
     </h1>
+    <% include menubar %>
     <div class="container-fluid">
 		<div class="row-fluid">
 			<% include sidebar %>
@@ -24,7 +25,7 @@
 				}
 				%>
 				<%
-				if (!und.isUndefined(tournaments)) {
+				if (!und.isUndefined(locals.tournaments) && tournaments != null && !und.isUndefined(locals.user)) {
 				%>
 					<h3>Your Tournaments</h3>
 				<%
@@ -35,6 +36,13 @@
 						</p>
 				<%
 					});	
+				}
+				else {
+				%>
+					<h3>Welcome to QScore</h3>
+					<p>QScore is a web-based application for keeping score in quizbowl games. In order to use QScore, please register
+						for an account and log in. For details on using QScore, please read the <a href="/faq/">FAQ</a>. </p>
+				<%
 				}
 				%>
 			</div>
