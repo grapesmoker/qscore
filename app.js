@@ -100,7 +100,8 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.all('/addteam', ensureAuthenticated, routes.addteam);
+app.get('/addteam', ensureAuthenticated, routes.addteam);
+app.post('/addteam', ensureAuthenticated, routes.addteam);
 app.get('/users', user.list);
 app.get('/newgame', ensureAuthenticated, routes.newgame);
 app.all('/newtour', ensureAuthenticated, routes.newtour);
@@ -116,7 +117,8 @@ app.get('/viewtour/:id', routes.viewtour);
 app.post('/savegame', routes.savegame);
 app.get('/edittour/:id', routes.edittour);
 app.post('/edittour', routes.edittour);
-
+app.get('/viewteam/:id', routes.viewteam);
+app.post('/viewteam', routes.viewteam);
 app.post('/get_team_from_id', qscore_ajax.get_team_from_id);
 
 http.createServer(app).listen(app.get('port'), function(){
