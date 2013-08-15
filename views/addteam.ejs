@@ -55,11 +55,18 @@
 							</div>
 							<div class="control-group">
 								<label class="control-label" for ="team-roster">Team Roster</label>
-								<div class="controls">
-									<textarea class="input-xlarge" id="team-roster" name="teamRoster" rows="5"></textarea>
+								
+								<div class="controls" id="team-roster">
+									<!--<textarea class="input-xlarge" id="team-roster" name="teamRoster" rows="5"></textarea>
 									<p class="help-block">
 										Please enter your team roster, one player per line.
+									</p>-->
+									<p id="player-block-1" class="player-block">
+										<input type="text" id="first-name-1" name="first-name-1" placeholder="First name">
+										<input type="text" id="last-name-1" name="last-name-1" placeholder="Last name">
+										<i class="icon-minus-sign" id="delete-player-1"></i>
 									</p>
+									<i class="icon-plus-sign" id="add-player-to-roster"></i>
 								</div>
 							</div>
 							<div class="form-actions">

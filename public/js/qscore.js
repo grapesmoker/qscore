@@ -230,5 +230,22 @@ $(function () {
 			console.log(data);
 		});
 	});
+	
+	
+	/* functions for handling the addition and removal of players on a roster */
+	
+	$('#add-player-to-roster').click(function () {
+		var num_players = $('.player-block').size();
+		var new_player_num = { player: num_players + 1 };
+		
+		var new_player_block = sprintf('<p id="player-block-%(player)d" class="player-block"> \
+										<input type="text" id="first-name-%(player)d" name="first-name-%(player)d" placeholder="First name"> \
+										<input type="text" id="last-name-%(player)d" name="last-name-%(player)d" placeholder="Last name"> \
+										<i class="icon-minus-sign" id="delete-player-%(player)d"></i> \
+									</p>', new_player_num);
+		
+		$(sprintf('#player-block-%(player)d', { player: num_players})).append(new_player_block);
+	});
+	
 });
 

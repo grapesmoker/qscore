@@ -36,6 +36,11 @@ exports.index = function(req, res){
 	}
 };
 
+exports.addteam2 = function(req, res) {
+	console.log(req.body);
+	
+}
+
 exports.addteam = function(req, res) {
 	console.log(req.body.teamName);
 	console.log(req.body.teamRoster);
@@ -52,10 +57,12 @@ exports.addteam = function(req, res) {
 	
 	if (req.method == 'POST') {
 		
-		teamRoster.split('\r\n').forEach(function (player) {
-			var split_name  = player.split(' ');
-			var first_name  = split_name[0];
-			var last_name   = split_name[split_name.length - 1];
+		var num_players = (und.size(req.body) - 2) / 2;
+		
+		for (var i = 1; i <= num_players; i++) {
+			
+			var first_name  = req.body['first-name-' + i];
+			var last_name   = req.body['last-name-' + i];
 			
 			db.players.findAndModify({query: {firstName: first_name, lastName: last_name, tournament: db.ObjectId(tournament)}, 
 				sort: [],
@@ -114,7 +121,7 @@ exports.addteam = function(req, res) {
 							});
 					}
 				});
-		});
+		};
 		
 	}
 	else {
@@ -381,10 +388,13 @@ exports.edittour = function(req, res) {
 };
 
 exports.viewteam = function(req, res) {
-	var teamId = req.params.teamId;
-	var readOnly = true;
+	
+	var teamId;
 	
 	if (req.method == 'GET') {
+		teamId = req.params.id;
+		var readOnly = true;
+		
 		Team.findOne({_id: teamId})
 		.populate('allowedToEdit')
 		.exec(function(err, team) {
@@ -392,13 +402,63 @@ exports.viewteam = function(req, res) {
 				console.log(err);
 			}
 			else {
-				team.allowedToEdit.forEach(function(editor) {
-					if (editor.id == req.user._id.toString()) {
-						readOnly = false;
-					}
-				});
-				res.render('viewteam', {title: 'View/Edit Team', state: 'success', team: team, readOnly: readOnly})
+				console.log(team);
+				if (team != null) {
+					team.allowedToEdit.forEach(function(editor) {
+						if (editor.id == req.user._id.toString()) {
+							readOnly = false;
+						}
+					});
+				}
+				res.render('viewteam', {title: 'View/Edit Team', state: 'success', team: team, readOnly: readOnly});
 			}
 		});
 	}
-}
+	
+	if (req.method == 'POST') {
+		teamId = req.body['team-id'];
+		
+		console.log(teamId);
+		
+		Team.findOne({_id: teamId})
+		.populate('allowedToEdit')
+		.exec(function(err, team) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				console.log(team);
+				if (team !== null) {
+					team.teamName = req.body.teamName;
+					var num_players = und.initial(und.range((und.size(req.body) - 1) / 3));
+					
+					console.log(num_players);
+					
+					num_players.forEach(function(player) {
+						
+						playerId = req.body['player-id-' + player];
+						firstName = req.body['first-name-' + player];
+						lastName = req.body['last-name-' + player];
+						
+						console.log(playerId);
+						console.log(firstName);
+						console.log(lastName);
+						
+						Player.findOne({_id: playerId}, function(err, player) {
+							player.firstName = firstName;
+							player.lastName = lastName;
+							player.save(function(err, result) {
+								if (err) {
+									console.log(err);
+								}
+								else {
+									res.render('viewteam', {title: 'View/Edit Team', state: 'success', team: team, readOnly: false});
+								}
+							});
+						});
+					});
+				}
+			}
+		});
+	}
+};
