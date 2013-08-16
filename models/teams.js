@@ -7,7 +7,7 @@ var ObjectId = mongoose.Schema.Types.ObjectId;
 
 var TeamSchema = new mongoose.Schema({
 	teamName: String,
-	teamRoster: Array,
+	teamRoster: [{type: ObjectId, ref: 'Player'}],
 	tournament: {type: ObjectId, ref: 'Tournament'},
 	allowedToEdit: [{type: ObjectId, ref: 'User'}]
 });

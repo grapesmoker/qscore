@@ -83,7 +83,7 @@ exports.addteam = function(req, res) {
 						console.log(first_name + ' ' + last_name + ' was saved!');
 						Team.update({teamName: teamName, tournament: db.ObjectId(tournament)},
 							{$set: {teamName: teamName},
-							$push: {teamRoster: {firstName: first_name, lastName: last_name, _id: rec._id}}},
+							$push: {teamRoster: rec._id}},
 							{upsert: true},
 							function(err, result, affected) {
 								if (err || !result) {
@@ -396,7 +396,7 @@ exports.viewteam = function(req, res) {
 		var readOnly = true;
 		
 		Team.findOne({_id: teamId})
-		.populate('allowedToEdit')
+		.populate('allowedToEdit teamRoster')
 		.exec(function(err, team) {
 			if (err) {
 				console.log(err);
@@ -415,21 +415,30 @@ exports.viewteam = function(req, res) {
 		});
 	}
 	
+	
+};
+
+exports.saveteam = function(req, res) {
+	console.log(req.body);
+	
 	if (req.method == 'POST') {
-		teamId = req.body['team-id'];
+		var teamId = req.body['team-id'];
+		var tourId = req.body['tour-id'];
 		
 		console.log(teamId);
 		
-		Team.findOne({_id: teamId})
-		.populate('allowedToEdit')
+		// complicated dependency structure here
+		
+		Team.findByIdAndUpdate(teamId,
+		{teamName: req.body.teamName})
+		.populate('allowedToEdit teamRoster')
 		.exec(function(err, team) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				console.log(team);
-				if (team !== null) {
-					team.teamName = req.body.teamName;
+				if (err) {
+					console.log(err);
+				}
+				else {
+					//console.log(team);
+					
 					var num_players = und.initial(und.range((und.size(req.body) - 1) / 3));
 					
 					console.log(num_players);
@@ -441,24 +450,77 @@ exports.viewteam = function(req, res) {
 						lastName = req.body['last-name-' + player];
 						
 						console.log(playerId);
-						console.log(firstName);
-						console.log(lastName);
 						
-						Player.findOne({_id: playerId}, function(err, player) {
-							player.firstName = firstName;
-							player.lastName = lastName;
-							player.save(function(err, result) {
+						if (playerId === null || und.isUndefined(playerId)) {
+							Player.create({firstName: firstName, lastName: lastName, tournament: tourId},
+							function(err, player) {
 								if (err) {
-									console.log(err);
+									res.json({result: 'failure!'});
 								}
 								else {
-									res.render('viewteam', {title: 'View/Edit Team', state: 'success', team: team, readOnly: false});
+									Team.findByIdAndUpdate(teamId,
+									{$addToSet: {teamRoster: player._id}},
+									function(err, team) {
+					
+									});
+								}
+							})
+						}
+						else {
+							Player.findByIdAndUpdate(playerId, 
+									{firstName: firstName,
+									 lastName: lastName,
+									 tournament: team.tournament},
+							function(err, player) {
+									
+								if (err) {
+									console.log(err);
+									callback(err, player);
+								}
+								else {
+									Team.findByIdAndUpdate(teamId,
+									{$addToSet: {teamRoster: player._id}},
+									function(err, team) {
+										
+									});
 								}
 							});
-						});
-					});
+						}
+					})
 				}
-			}
 		});
 	}
+	
+	res.json({result: 'success'});
 };
+
+exports.deleteplayer = function(req, res) {
+	
+	if (req.method == 'POST') {
+		
+		console.log(req.body)
+		
+		var teamId = req.body['team-id'];
+		var tourId = req.body['tour-id'];
+		var playerId = req.body['player-id'];
+		
+		Player.findByIdAndRemove(playerId, function(err, player) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				console.log(playerId + ' removed from db');
+				Team.findByIdAndUpdate(teamId, {$pull: {teamRoster: playerId}}, function(err, team) {
+					if (err) {
+						console.log(err);
+					}
+					else {
+						console.log(playerId + ' removed from ' + team.teamName);
+					}
+				})
+			}
+		});
+
+		res.json({result: 'success'});
+	}
+}

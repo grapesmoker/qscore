@@ -235,8 +235,10 @@ $(function () {
 	/* functions for handling the addition and removal of players on a roster */
 	
 	$('#add-player-to-roster').click(function () {
+		
+		console.log('clicked');
 		var num_players = $('.player-block').size();
-		var new_player_num = { player: num_players + 1 };
+		var new_player_num = { player: num_players };
 		
 		var new_player_block = sprintf('<p id="player-block-%(player)d" class="player-block"> \
 										<input type="text" id="first-name-%(player)d" name="first-name-%(player)d" placeholder="First name"> \
@@ -244,8 +246,38 @@ $(function () {
 										<i class="icon-minus-sign" id="delete-player-%(player)d"></i> \
 									</p>', new_player_num);
 		
-		$(sprintf('#player-block-%(player)d', { player: num_players})).append(new_player_block);
+		console.log(new_player_block);
+		
+		$(sprintf('#player-block-%(player)d', { player: num_players - 1})).after(new_player_block);
 	});
 	
+	$('#team-roster-form').on('submit', function(event) {
+		console.log(event);
+		event.preventDefault();
+		console.log($('#team-roster-form').serialize());
+		$.post("/saveteam",
+			$('#team-roster-form').serialize(),
+			function(result) {
+				console.log('form saved');
+			},
+			'json'
+		);
+	});
+	
+	$('.delete-player').click(function() {
+		console.log("foo");
+		var player_num = $(this).attr('data-player-num');
+		var player_id = $('#player-id-' + player_num).val();
+		var team_id = $('#team-id').val();
+		console.log(team_id);
+		$.post("/deleteplayer",
+			{'player-id': player_id, 'team-id': team_id},
+			function(result) {
+				console.log('player deleted');
+			},
+			'json');
+		
+		$('#player-block-' + player_num).remove();
+	});
 });
 

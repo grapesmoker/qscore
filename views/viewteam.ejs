@@ -16,14 +16,15 @@
 			<% include sidebar %>
 			<div class="span10">
 				<% include errormsg %>
-				<form class="form-horizontal" action="/viewteam" method="post">
+				<form class="form-horizontal" action="/saveteam" method="post" name="team-roster-form" id="team-roster-form">
 					<legend>View/Edit Team</legend>
 					<fieldset>
 						<div class="control-group">
 							<label class="control-label" for="tour-name">Team Name</label>
 							<div class="controls">
 								<input type="text" class="input-xlarge" id="team-name" name="teamName" value="<%= team.teamName %>">
-								<input type="hidden" name="team-id" value="<%= team._id %>">
+								<input type="hidden" id="team-id" name="team-id" value="<%= team._id %>">
+								<input type="hidden" id="tour-id" name="tour-id" value="<%= team.tournament %>">
 								<p class="help-block">
 									Team name, e.g. Maryland A
 								</p>							
@@ -31,7 +32,7 @@
 						</div>
 						<div class="control-group">
 							<label class="control-label" for ="team-roster">Team Roster</label>
-							<div class="controls" id="team-roster">
+							<div class="controls" id="team-roster-div">
 								<%
 								team.teamRoster.forEach(function(player, index) {
 								%>
@@ -44,7 +45,7 @@
 										<input type="text" id="last-name-<%= index %>" 
 										name="last-name-<%= index %>" placeholder="Last name"
 										value="<%= player.lastName %>">
-										<i class="icon-minus-sign" id="delete-player-<%= index %>"></i>
+										<i class="icon-minus-sign delete-player" data-player-num="<%= index %>" id="delete-player-<%= index %>"></i>
 									</p>
 								<%
 								});

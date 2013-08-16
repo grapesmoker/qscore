@@ -12,7 +12,7 @@ var PlayerSchema = new mongoose.Schema({
 	tournament: ObjectId
 });
 
-var Player = mongoose.model('players', PlayerSchema);
+var Player = mongoose.model('Player', PlayerSchema);
 
 module.exports = {
 	Player: Player

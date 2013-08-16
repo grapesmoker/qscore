@@ -25,12 +25,12 @@ var passport = require('passport'),
 bcrypt = require('bcrypt');
 und = require('underscore');
 moment = require('moment');
+async = require('async');
 
 databaseUrl = "localhost/qscore_db";
 collections = ['players', 'teams', 'games', 'tournaments', 'users', 'playerScores', 'teamScores'];
 mongojs = require('mongojs');
 db = mongojs(databaseUrl, collections);
-step = require('step')
 
 //console.log(db);
 //db = require('mongojs').connect(databaseUrl, collections);
@@ -118,7 +118,8 @@ app.post('/savegame', routes.savegame);
 app.get('/edittour/:id', routes.edittour);
 app.post('/edittour', routes.edittour);
 app.get('/viewteam/:id', routes.viewteam);
-app.post('/viewteam', routes.viewteam);
+app.post('/saveteam', routes.saveteam);
+app.post('/deleteplayer', routes.deleteplayer);
 app.post('/get_team_from_id', qscore_ajax.get_team_from_id);
 
 http.createServer(app).listen(app.get('port'), function(){
