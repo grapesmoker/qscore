@@ -14,7 +14,7 @@
     <div class="container-fluid">
 		<div class="row-fluid">
 			<% include sidebar %>
-			<div class="span10">
+			<div class="span8 offset2">
 				<% include errormsg %>
 				<%
 				if (typeof tournament != 'undefined' && tournament) {
@@ -32,12 +32,16 @@
 					<p>
 						<h5><%= tournament.tourAddress %></h5>
 					</p>
+					<input type="hidden" id="tour-id" value="<%= tournament._id %>">
 					<%
 					if (!und.isUndefined(locals.teams) && teams) {
 					%>
 						<table class="table table-striped">
 							<caption>
 								Participating Teams
+								<a href="/addteam/<%= tournament._id%>">
+									<i class="icon-plus-sign"></i>
+								</a>
 							</caption>
 							<thead>
 								<tr>
@@ -92,7 +96,7 @@
 									<td><%= game.team1.teamName %></td>
 									<td><%= game.team2.teamName %></td>
 									<td>&nbsp;</td>
-									<td><a href="/viewgame/<%= game._id %>">
+									<td><a href="/playgame/<%= game._id %>">
 										<i class="icon-edit"></i>
 									</a></td>
 								</tr>

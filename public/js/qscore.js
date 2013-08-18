@@ -249,6 +249,8 @@ $(function () {
 		console.log(new_player_block);
 		
 		$(sprintf('#player-block-%(player)d', { player: num_players - 1})).after(new_player_block);
+		
+		$('#num-players').val(num_players + 1);
 	});
 	
 	$('#team-roster-form').on('submit', function(event) {
@@ -278,6 +280,10 @@ $(function () {
 			'json');
 		
 		$('#player-block-' + player_num).remove();
+		
+		var num_players = $('.player-block').size();
+		$('#num-players').val(num_players);
 	});
+
 });
 

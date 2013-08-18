@@ -14,30 +14,30 @@
     <div class="container-fluid">
 		<div class="row-fluid">
 			<% include sidebar %>
-			<div class="span10">
+			<div class="span8 offset2">
 				<h3>
 					<% 
-					if (typeof team_rosters != 'undefined') {
-					%><%= team_rosters[0].teamName %> vs. <%= team_rosters[1].teamName %>
+					if (!und.isUndefined(locals.game)) {
+					%><%= game.team1.teamName %> vs. <%= game.team2.teamName %>
 					<%
 					}
 					%>
 				</h3>
 				<button class="btn btn-primary" id="savegame" data-game-id="<%= game._id %>">
 					<i class="icon-file"></i>Save game</button>
-				<table class="table">
+				<table class="table table-striped">
 					<thead>
 						<tr>
 							<th>Question</th>
-							<th class="team-name" data-team-id="<%= team_rosters[0]._id %>"
-								colspan="<%= team_rosters[0].teamRoster.length + 2 %>"><%= team_rosters[0].teamName %></th>
-							<th class="team-name" data-team-id="<%= team_rosters[1]._id %>" 
-								colspan="<%= team_rosters[1].teamRoster.length + 2 %>"><%= team_rosters[1].teamName %></th>
+							<th class="team-name" data-team-id="<%= game.team1._id %>"
+								colspan="<%= game.team1.teamRoster.length + 2 %>"><%= game.team1.teamName %></th>
+							<th class="team-name" data-team-id="<%= game.team2._id %>" 
+								colspan="<%= game.team2.teamRoster.length + 2 %>"><%= game.team2.teamName %></th>
 						</tr>
 						<tr>
 							<td>&nbsp;</td>
 							<%
-							team_rosters[0].teamRoster.forEach(function (player) {
+							game.team1.teamRoster.forEach(function (player) {
 								if (typeof player != 'undefined') {
 								%>
 									<th class="user-name" data-user-id="<%= player._id %>"><%= player.firstName + ' ' + player.lastName %></th>
@@ -49,7 +49,7 @@
 							<th>Running Total</th>
 							
 							<%
-							team_rosters[1].teamRoster.forEach(function (player) {
+							game.team2.teamRoster.forEach(function (player) {
 							%>
 								<th class="user-name" data-user-id="<%= player._id %>"><%= player.firstName + ' ' + player.lastName %></th>
 							<%
@@ -61,8 +61,8 @@
 					</thead>
 					<tbody>
 						<%
-						var numPlayers1 = team_rosters[0].teamRoster.length;
-						var numPlayers2 = team_rosters[1].teamRoster.length;
+						var numPlayers1 = game.team1.teamRoster.length;
+						var numPlayers2 = game.team2.teamRoster.length;
 						for (var i = 1; i < 21; i++) {
 						%>
 							<tr>
@@ -70,14 +70,14 @@
 						<%
 							for (var j = 1; j < numPlayers1 + 1; j ++) {
 						%>
-								<td align="center" class="player-score player-id-<%= team_rosters[0].teamRoster[j -1]._id %>" 
+								<td align="center" class="player-score player-id-<%= game.team1.teamRoster[j -1]._id %>" 
 									data-question-num="<%= i %>" id="player_score_A_<%= i %>_<%= j %>">
 									
 								</td>
 						<%
 							}
 						%>
-							<td align="center" class="bonus-score team-id-<%= team_rosters[0]._id %>" 
+							<td align="center" class="bonus-score team-id-<%= game.team1._id %>" 
 								data-question-num="<%= i %>" id="bonus_score_A_<%= i %>">
 								
 							</td>
@@ -87,14 +87,14 @@
 						<%	
 							for (var j = 1; j < numPlayers2 + 1; j ++) {
 						%>
-								<td align="center" class="pagination-centered player-score player-id-<%= team_rosters[1].teamRoster[j -1]._id %>" 
+								<td align="center" class="pagination-centered player-score player-id-<%= game.team2.teamRoster[j -1]._id %>" 
 									data-question-num="<%= i %>" id="player_score_B_<%= i %>_<%= j %>">
 									
 								</td>
 						<%
 							}
 						%>
-							<td align="center" class="bonus-score team-id-<%= team_rosters[1]._id %>" 
+							<td align="center" class="bonus-score team-id-<%= game.team2._id %>" 
 								data-question-num="<%= i %>" id="bonus_score_B_<%= i %>">
 								
 							</td>

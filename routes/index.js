@@ -17,8 +17,8 @@ exports.index = function(req, res){
 	
 	if (req.isAuthenticated()) {
 		var userId = req.user._id.toString();
-		//console.log(req.user);
-		//console.log(userId);
+		// console.log(req.user);
+		// console.log(userId);
 		Tournament.find({createdBy: userId}, function(err, tournaments) {
 			if (err) {
 				res.render('index', {title: 'QScore', state: 'error', message: 'An error occurred!'});
@@ -39,6 +39,60 @@ exports.index = function(req, res){
 exports.addteam2 = function(req, res) {
 	console.log(req.body);
 	
+	if (req.method == 'POST') {
+		var teamName = req.body['teamName'],
+			tournament = req.body['tournament'],
+			numPlayers = req.body['num-players'];
+		
+		
+		und.range(numPlayers).forEach(function(player) {
+			var first_name  = req.body['first-name-' + player];
+			var last_name   = req.body['last-name-' + player];
+			
+			console.log(first_name + ' ' + last_name);
+			
+			Player.findOneAndUpdate({firstName: first_name, lastName: last_name, tournament: tournament},
+	    	{firstName: first_name, lastName: last_name, tournament: tournament},
+			{upsert: true},
+			function(err, player) {
+				if (err) {
+					console.log(err);
+					callback(err, player);
+				}
+				else {
+					console.log(player);
+					Team.findOneAndUpdate({teamName: teamName, tournament: tournament},
+					{teamName: teamName, tournament: tournament, $addToSet: {teamRoster: player._id}},
+					{upsert: true},
+					function(err, team) {
+						if (err) {
+							console.log(err);
+						}
+						else {
+							console.log(team);
+						 };
+					 });
+				 };
+			 });
+		}
+	}
+	
+	if (req.method == 'GET') {
+		
+		var tourId = req.params.id;
+		
+		Tournament.findById(tourId, function(err, tournament) {
+			if (err) {
+				console.log('Error retrieving tournaments!');
+				state = 'error';
+				message = 'An error occurred! Could not retrieve tournaments!';
+				res.render('addteam', {title: 'Add Team', state: state, message: message});
+			}
+			else {
+				res.render('addteam', {title: 'Add Team', state: '', message: '', tournaments: [tournament]});
+			}
+		});
+	}
 }
 
 exports.addteam = function(req, res) {
@@ -59,10 +113,12 @@ exports.addteam = function(req, res) {
 		
 		var num_players = (und.size(req.body) - 2) / 2;
 		
-		for (var i = 1; i <= num_players; i++) {
+		for (var i = 0; i < num_players; i++) {
 			
 			var first_name  = req.body['first-name-' + i];
 			var last_name   = req.body['last-name-' + i];
+			
+			console.log(first_name + ' ' + last_name);
 			
 			db.players.findAndModify({query: {firstName: first_name, lastName: last_name, tournament: db.ObjectId(tournament)}, 
 				sort: [],
@@ -124,8 +180,11 @@ exports.addteam = function(req, res) {
 		};
 		
 	}
-	else {
-		db.tournaments.find({}, function(err, tournaments) {
+	if (req.method == 'GET') {
+		
+		var tourId = req.params.id;
+		
+		Tournament.findById(tourId, function(err, tournament) {
 			if (err) {
 				console.log('Error retrieving tournaments!');
 				state = 'error';
@@ -133,7 +192,7 @@ exports.addteam = function(req, res) {
 				res.render('addteam', {title: 'Add Team', state: state, message: message});
 			}
 			else {
-				res.render('addteam', {title: 'Add Team', state: '', message: '', tournaments: tournaments});
+				res.render('addteam', {title: 'Add Team', state: '', message: '', tournaments: [tournament]});
 			}
 		});
 	}
@@ -172,7 +231,8 @@ exports.savegame = function(req, res) {
 									res.json({result: 'failure'});
 								}
 								else {
-									//console.log(score_entry.questionNum + ' ' + score_entry.score);
+									// console.log(score_entry.questionNum + ' '
+									// + score_entry.score);
 									res.json({result: 'success'});
 								}
 							});
@@ -216,8 +276,10 @@ exports.newtour = function(req, res) {
 	var message = '';
 	var state = '';
 	
-	/* someone should only be able to get to this page if they're already authenticated
-	 * by the passport middleware */
+	/*
+	 * someone should only be able to get to this page if they're already
+	 * authenticated by the passport middleware
+	 */
 	
 	
 	if (req.method == 'POST') {
@@ -225,18 +287,18 @@ exports.newtour = function(req, res) {
 			tourDate = req.body.tourDate,
 			tourLocation = req.body.tourLocation,
 			tourAddress = req.body.tourAddress,
-			//username = req.user[0].username,
+			// username = req.user[0].username,
 			id = req.user._id.toString();
 			console.log(req.user);
 			
-		/*db.tournaments.findAndModify({query: {tourName: tourName, createdBy: db.ObjectId(id)},
-			sort: [],
-			update: {$set: {tourName: tourName, tourDate: tourDate, 
-							tourLocation: tourLocation, tourAddress: tourAddress,
-							createdBy: db.ObjectId(id),
-							secret: Math.random().toString(36).substring(6)}},
-			upsert: true,
-			'new': true},*/
+		/*
+		 * db.tournaments.findAndModify({query: {tourName: tourName, createdBy:
+		 * db.ObjectId(id)}, sort: [], update: {$set: {tourName: tourName,
+		 * tourDate: tourDate, tourLocation: tourLocation, tourAddress:
+		 * tourAddress, createdBy: db.ObjectId(id), secret:
+		 * Math.random().toString(36).substring(6)}}, upsert: true, 'new':
+		 * true},
+		 */
 			
 			
 		Tournament.update(
@@ -290,32 +352,46 @@ exports.playgame = function(req, res) {
 		console.log(team2);
 		console.log(tour);
 		
-		db.games.save({team1: db.ObjectId(team1), team2: db.ObjectId(team2), tournament: db.ObjectId(tour),
+		Game.create({team1: db.ObjectId(team1), team2: db.ObjectId(team2), tournament: db.ObjectId(tour),
 			round: round, room: room, moderator: moderator},
-			function(err, rec) {
+			function(err, game) {
 				if (err) {
 					message = 'Error starting this game!';
 					state = 'error';
 					res.render('newgame', {title: 'New Game', state: state, message: message});
 				}
 				else {
-					db.teams.find({$or: [{_id: db.ObjectId(team1)}, {_id: db.ObjectId(team2)}]}, function(err, team_rosters) {
+					Team.find({$or: [{_id: db.ObjectId(team1)}, {_id: db.ObjectId(team2)}]}, function(err, teams) {
 						if (err) {
 							message = 'Error starting this game!';
 							state = 'error';
 							res.render('newgame', {title: 'New Game', state: state, message: message});
 						}
 						else {
-							console.log(team_rosters);
-							res.render('playgame', {title: 'Play Game', team_rosters: team_rosters, game: rec});
+							console.log(teams);
+							res.render('playgame', {title: 'Play Game', team_rosters: teams, game: rec});
 						}
 					});
 				}
 			}
 		);
 	}
-	else {
-		res.render('playgame', {title: 'Play Game', state: state, message: message});
+	
+	if (req.method == 'GET') {
+		var gameId = req.params.id;
+		
+		Game.findById(gameId)
+		.populate('team1 team2')
+		.exec(function(err, game) {
+			if (err) {
+				console.log(err);
+				res.render('playgame', {title: 'Play Game', state: 'error', message: 'Error occurred starting game!', game: {}});
+			}
+			else {
+				console.log(game);
+				res.render('playgame', {title: 'Play Game', state: 'success', game: game});
+			}
+		})
 	}
 };
 
@@ -339,12 +415,6 @@ exports.viewtour = function(req, res) {
 					res.render('viewtour', {title: 'View Tournament', state: 'error', message: 'Tournament teams not found!', user: req.user});
 				}
 				else {
-					Game.find({tournament: tourId})
-					.populate('team1 team2')
-					.exec(function(err, games) {
-						console.log(games);
-					});
-					
 					Game
 					.find({tournament: tourId})
 					.populate('team1 team2')
@@ -437,7 +507,7 @@ exports.saveteam = function(req, res) {
 					console.log(err);
 				}
 				else {
-					//console.log(team);
+					// console.log(team);
 					
 					var num_players = und.initial(und.range((und.size(req.body) - 1) / 3));
 					
@@ -489,9 +559,9 @@ exports.saveteam = function(req, res) {
 					})
 				}
 		});
+		
+		res.json({result: 'success'});
 	}
-	
-	res.json({result: 'success'});
 };
 
 exports.deleteplayer = function(req, res) {
@@ -507,15 +577,18 @@ exports.deleteplayer = function(req, res) {
 		Player.findByIdAndRemove(playerId, function(err, player) {
 			if (err) {
 				console.log(err);
+				res.json({result: 'failure'});
 			}
 			else {
 				console.log(playerId + ' removed from db');
 				Team.findByIdAndUpdate(teamId, {$pull: {teamRoster: playerId}}, function(err, team) {
 					if (err) {
 						console.log(err);
+						res.json({result: 'failure'});
 					}
 					else {
 						console.log(playerId + ' removed from ' + team.teamName);
+						res.json({result: 'success'});
 					}
 				})
 			}

@@ -100,12 +100,13 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/addteam', ensureAuthenticated, routes.addteam);
-app.post('/addteam', ensureAuthenticated, routes.addteam);
+app.get('/addteam/:id', ensureAuthenticated, routes.addteam2);
+app.post('/addteam', ensureAuthenticated, routes.addteam2);
 app.get('/users', user.list);
 app.get('/newgame', ensureAuthenticated, routes.newgame);
 app.all('/newtour', ensureAuthenticated, routes.newtour);
-app.all('/playgame', routes.playgame);
+app.post('/playgame', routes.playgame);
+app.get('/playgame/:id', routes.playgame);
 app.get('/login', user.login);
 app.all('/register', user.register);
 app.post('/login', 
