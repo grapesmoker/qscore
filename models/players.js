@@ -9,7 +9,8 @@ var PlayerSchema = new mongoose.Schema({
 	firstName: String,
 	lastName: String,
 	scoreEntries: Array,
-	tournament: ObjectId
+	tournament: ObjectId,
+	team: ObjectId
 });
 
 var Player = mongoose.model('Player', PlayerSchema);

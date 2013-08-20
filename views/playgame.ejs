@@ -37,7 +37,7 @@
 						<tr>
 							<td>&nbsp;</td>
 							<%
-							game.team1.teamRoster.forEach(function (player) {
+							teams[0].teamRoster.forEach(function (player) {
 								if (typeof player != 'undefined') {
 								%>
 									<th class="user-name" data-user-id="<%= player._id %>"><%= player.firstName + ' ' + player.lastName %></th>
@@ -49,7 +49,7 @@
 							<th>Running Total</th>
 							
 							<%
-							game.team2.teamRoster.forEach(function (player) {
+							teams[1].teamRoster.forEach(function (player) {
 							%>
 								<th class="user-name" data-user-id="<%= player._id %>"><%= player.firstName + ' ' + player.lastName %></th>
 							<%
@@ -70,7 +70,7 @@
 						<%
 							for (var j = 1; j < numPlayers1 + 1; j ++) {
 						%>
-								<td align="center" class="player-score player-id-<%= game.team1.teamRoster[j -1]._id %>" 
+								<td align="center" class="player-score player-id-<%= teams[0].teamRoster[j -1]._id %>" 
 									data-question-num="<%= i %>" id="player_score_A_<%= i %>_<%= j %>">
 									
 								</td>
@@ -87,7 +87,7 @@
 						<%	
 							for (var j = 1; j < numPlayers2 + 1; j ++) {
 						%>
-								<td align="center" class="pagination-centered player-score player-id-<%= game.team2.teamRoster[j -1]._id %>" 
+								<td align="center" class="pagination-centered player-score player-id-<%= teams[1].teamRoster[j -1]._id %>" 
 									data-question-num="<%= i %>" id="player_score_B_<%= i %>_<%= j %>">
 									
 								</td>

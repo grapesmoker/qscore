@@ -100,8 +100,8 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
-app.get('/addteam/:id', ensureAuthenticated, routes.addteam2);
-app.post('/addteam', ensureAuthenticated, routes.addteam2);
+app.get('/addteam/:id', ensureAuthenticated, routes.addteam);
+app.post('/addteam', ensureAuthenticated, routes.addteam);
 app.get('/users', user.list);
 app.get('/newgame', ensureAuthenticated, routes.newgame);
 app.all('/newtour', ensureAuthenticated, routes.newtour);

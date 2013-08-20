@@ -36,7 +36,8 @@ exports.index = function(req, res){
 	}
 };
 
-exports.addteam2 = function(req, res) {
+exports.addteam = function(req, res) {
+	
 	console.log(req.body);
 	
 	if (req.method == 'POST') {
@@ -44,142 +45,61 @@ exports.addteam2 = function(req, res) {
 			tournament = req.body['tournament'],
 			numPlayers = req.body['num-players'];
 		
+		var player_array = [];
 		
-		und.range(numPlayers).forEach(function(player) {
-			var first_name  = req.body['first-name-' + player];
-			var last_name   = req.body['last-name-' + player];
+		console.log('numPlayers: ' + numPlayers);
+		
+		und.range(numPlayers).forEach(function(player_index) {
+			console.log(player_index);
+			var first_name  = req.body['first-name-' + player_index];
+			var last_name   = req.body['last-name-' + player_index];
 			
 			console.log(first_name + ' ' + last_name);
 			
-			Player.findOneAndUpdate({firstName: first_name, lastName: last_name, tournament: tournament},
-	    	{firstName: first_name, lastName: last_name, tournament: tournament},
-			{upsert: true},
-			function(err, player) {
-				if (err) {
-					console.log(err);
-					callback(err, player);
-				}
-				else {
-					console.log(player);
-					Team.findOneAndUpdate({teamName: teamName, tournament: tournament},
-					{teamName: teamName, tournament: tournament, $addToSet: {teamRoster: player._id}},
-					{upsert: true},
-					function(err, team) {
-						if (err) {
-							console.log(err);
-						}
-						else {
-							console.log(team);
-						 };
-					 });
-				 };
-			 });
-		}
-	}
-	
-	if (req.method == 'GET') {
+			player_array.push({firstName: first_name, lastName: last_name, tournament: tournament});
+		});
 		
-		var tourId = req.params.id;
+		console.log(player_array);
 		
-		Tournament.findById(tourId, function(err, tournament) {
+		Player.create(player_array, function(err) {
 			if (err) {
-				console.log('Error retrieving tournaments!');
-				state = 'error';
-				message = 'An error occurred! Could not retrieve tournaments!';
-				res.render('addteam', {title: 'Add Team', state: state, message: message});
+				console.log(err);
+				res.render('addteam', {title: 'Add Team', 
+					state: 'error', 
+					message: 'There was an error creating the team roster!', 
+					tournaments: [tournament]});
 			}
 			else {
-				res.render('addteam', {title: 'Add Team', state: '', message: '', tournaments: [tournament]});
-			}
-		});
-	}
-}
-
-exports.addteam = function(req, res) {
-	console.log(req.body.teamName);
-	console.log(req.body.teamRoster);
-	
-	var teamName = req.body.teamName,
-		teamRoster = req.body.teamRoster;
-		tournament = req.body.tournament;
-	
-	console.log(tournament)
-		
-	var message = '';
-	var state = '';
-	var saved_roster = [];
-	
-	if (req.method == 'POST') {
-		
-		var num_players = (und.size(req.body) - 2) / 2;
-		
-		for (var i = 0; i < num_players; i++) {
-			
-			var first_name  = req.body['first-name-' + i];
-			var last_name   = req.body['last-name-' + i];
-			
-			console.log(first_name + ' ' + last_name);
-			
-			db.players.findAndModify({query: {firstName: first_name, lastName: last_name, tournament: db.ObjectId(tournament)}, 
-				sort: [],
-				update: {$set: { firstName: first_name, lastName: last_name }},
-				upsert: true,
-				'new': true},
-				function(err, rec) {
-					if (err || !rec) {
+				var player_ids = [];
+				
+				console.log(arguments);
+				for(var i = 1; i < arguments.length; i++) {
+					player_ids.push(arguments[i]._id);
+				};
+				
+				Team.findOneAndUpdate({teamName: teamName, tournament: tournament},
+				{teamName: teamName, tournament: tournament, teamRoster: player_ids},
+				{upsert: true},
+				function(err, team) {
+					if (err) {
 						console.log(err);
-						console.log(first_name + ' ' + last_name + ' was not saved!');
-						var message = "There was an error saving the team roster!";
-						var state   = 'error';
-						res.render('addteam', {title: 'Add Team', state: state, message: message});
+						res.render('addteam', {title: 'Add Team',
+							state: 'error',
+							message: 'There was an error creating the team!',
+							tournaments: [tournament]});
 					}
 					else {
-						console.log(rec);
-						console.log(rec._id);
-						console.log(first_name + ' ' + last_name + ' was saved!');
-						Team.update({teamName: teamName, tournament: db.ObjectId(tournament)},
-							{$set: {teamName: teamName},
-							$push: {teamRoster: rec._id}},
-							{upsert: true},
-							function(err, result, affected) {
-								if (err || !result) {
-									console.log("Team not saved!");
-									var message      = "There was an error saving the team!";
-									var state        = "error";
-									res.render('addteam', {title: 'Add Team', state: state, message: message});
-								}
-								else {
-									Team.findOne({teamName: teamName, tournament: tournament}, function (err, team) {
-										if (err) {
-											console.log(err);
-										}
-										else {
-											console.log(team);
-											Tournament.findById(tournament, function(err, tournament) {
-												tournament.teams.push(team._id);
-												tournament.save(function (err, result) {
-													if (err) {
-														console.log(err);
-													}
-													else {
-														console.log(result);
-													}
-												});
-											});
-										}
-									});
-									
-									console.log("Team saved in database");
-									var message = "Team saved successfully!";
-									var state = "ok";
-									res.render('addteam', {title: 'Add Team', state: state, message: message});
-								}
-							});
+						console.log(team);
+						res.render('addteam', {title: 'Add Team', 
+							state: 'success', 
+							message: 'Team created!', 
+							tournaments: [tournament]});
 					}
 				});
-		};
-		
+			}
+		});
 	}
+	
 	if (req.method == 'GET') {
 		
 		var tourId = req.params.id;
@@ -197,10 +117,8 @@ exports.addteam = function(req, res) {
 		});
 	}
 	
-	console.log(state);
-	console.log(message);
-	
-};
+}
+
 
 exports.savegame = function(req, res) {
 	
@@ -308,8 +226,8 @@ exports.newtour = function(req, res) {
 						createdBy: id,
 						secret: Math.random().toString(36).substring(6)}},
 				{upsert: true},
-			function(err, rec) {
-				if (err || !rec) {
+			function(err, tournament) {
+				if (err || !tournament) {
 					console.log('An error occurred:' + err);
 					state = 'error';
 					message = 'An error occurred in saving this tournament!';
@@ -361,7 +279,8 @@ exports.playgame = function(req, res) {
 					res.render('newgame', {title: 'New Game', state: state, message: message});
 				}
 				else {
-					Team.find({$or: [{_id: db.ObjectId(team1)}, {_id: db.ObjectId(team2)}]}, function(err, teams) {
+					Team.find({$or: [{_id: team1}, {_id: team2}]})
+					.populate('teamRoster').exec(function(err, teams) {
 						if (err) {
 							message = 'Error starting this game!';
 							state = 'error';
@@ -369,7 +288,8 @@ exports.playgame = function(req, res) {
 						}
 						else {
 							console.log(teams);
-							res.render('playgame', {title: 'Play Game', team_rosters: teams, game: rec});
+							console.log(game);
+							res.render('playgame', {title: 'Play Game', teams: teams, game: game});
 						}
 					});
 				}
@@ -389,9 +309,19 @@ exports.playgame = function(req, res) {
 			}
 			else {
 				console.log(game);
-				res.render('playgame', {title: 'Play Game', state: 'success', game: game});
+				Team.find({$or: [{_id: game.team1._id}, {_id: game.team2._id}]})
+				.populate('teamRoster').
+				exec(function(errm, teams) {
+					if (err) {
+						console.log(err)
+					}
+					else {
+						res.render('playgame', {title: 'Play Game', state: 'success', teams: teams, game: game});
+					}
+				});
+				
 			}
-		})
+		});
 	}
 };
 
@@ -534,7 +464,7 @@ exports.saveteam = function(req, res) {
 					
 									});
 								}
-							})
+							});
 						}
 						else {
 							Player.findByIdAndUpdate(playerId, 
@@ -556,7 +486,7 @@ exports.saveteam = function(req, res) {
 								}
 							});
 						}
-					})
+					});
 				}
 		});
 		
