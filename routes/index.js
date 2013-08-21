@@ -157,6 +157,34 @@ exports.savegame = function(req, res) {
 					}
 		});
 	});
+	// This is decidedly *NOT* the right paradigm, but I'm too lazy to fix it right now
+	
+	team_scores.forEach(function(score_entry) {
+		Team.findOneAndUpdate({_id: score_entry.teamId},
+				{$pull: {scoreEntries: {gameId: gameId}}},
+				function(err, team) {
+					if (err) {
+						console.log(err);
+						res.json({result: 'error'});
+					}
+					else {
+						Team.findOneAndUpdate({_id: score_entry.teamId},
+								{$push: {scoreEntries: {score: score_entry.score,
+									questionNum: score_entry.questionNum,
+									gameId: score_entry.gameId}}},
+						function(err, team) {
+							if (err) {
+								console.log(err);
+								res.json({result: 'error'});
+							}
+							else {
+								console.log(team);
+								res.json({result: 'success'});
+							}
+						});
+					}
+				});
+	});
 }
 
 exports.newgame = function(req, res) {
@@ -289,7 +317,12 @@ exports.playgame = function(req, res) {
 						else {
 							console.log(teams);
 							console.log(game);
-							res.render('playgame', {title: 'Play Game', teams: teams, game: game});
+							res.render('playgame', {title: 'Play Game', teams: teams, game: game, 
+								checkForNulScore: function(entry) {
+									if (und.isNull(entry['score'])) {
+										return 0;
+									} else { return entry['score']}
+								}});
 						}
 					});
 				}
@@ -316,7 +349,13 @@ exports.playgame = function(req, res) {
 						console.log(err)
 					}
 					else {
-						res.render('playgame', {title: 'Play Game', state: 'success', teams: teams, game: game});
+						console.log(teams);
+						res.render('playgame', {title: 'Play Game', state: 'success', teams: teams, game: game,
+							checkForNullScore: function(entry) {
+								if (und.isNull(entry['score'])) {
+									return 0;
+								} else { return entry['score']}
+							}});
 					}
 				});
 				

@@ -11,6 +11,10 @@
     	<%= title %>
     </h1>
     <% include menubar %>
+    <%
+    
+    %>
+    
     <div class="container-fluid">
 		<div class="row-fluid">
 			<% include sidebar %>
@@ -23,8 +27,8 @@
 					}
 					%>
 				</h3>
-				<button class="btn btn-primary" id="savegame" data-game-id="<%= game._id %>">
-					<i class="icon-file"></i>Save game</button>
+				<a class="btn btn-primary" href="#" id="savegame" data-game-id="<%= game._id %>">
+					<i class="icon-file pull-left"></i>Save game</a>
 				<table class="table table-striped">
 					<thead>
 						<tr>
@@ -63,23 +67,55 @@
 						<%
 						var numPlayers1 = game.team1.teamRoster.length;
 						var numPlayers2 = game.team2.teamRoster.length;
-						for (var i = 1; i < 21; i++) {
+						function checkForNullScore(entry) {
+							if (und.isNull(entry['score'])) {
+								return 0;
+							} else { return entry['score']}
+						};
+						for (var i = 1; i < 25; i++) {
 						%>
 							<tr>
 							<td><%= i %></td>
 						<%
 							for (var j = 1; j < numPlayers1 + 1; j ++) {
+								var player = teams[0].teamRoster[j - 1];
+								var scoreEntry = und.findWhere(player.scoreEntries, {questionNum: i.toString()});
+								
+								console.log(scoreEntry);
+								
+								/*player.scoreEntries.forEach(function(entry) {
+									if (entry['questionNum'] == i) {
+										scoreEntry = entry;
+									}
+								});*/
 						%>
 								<td align="center" class="player-score player-id-<%= teams[0].teamRoster[j -1]._id %>" 
-									data-question-num="<%= i %>" id="player_score_A_<%= i %>_<%= j %>">
+									data-question-num="<%= i %>" id="player_score_A_<%= i %>_<%= j %>"
+									data-score="<%= checkForNullScore(scoreEntry) %>">
+									<p>
+										<% if (checkForNullScore(scoreEntry) > 0) {
+										%>
+										<%=	scoreEntry['score'] %>
+										<% }
+										%>
+									</p>
+									
 									
 								</td>
 						<%
 							}
+							
+							var teamScoreEntry = und.findWhere(teams[0].scoreEntries, {questionNum: i.toString()});
 						%>
 							<td align="center" class="bonus-score team-id-<%= game.team1._id %>" 
-								data-question-num="<%= i %>" id="bonus_score_A_<%= i %>">
-								
+								data-question-num="<%= i %>" id="bonus_score_A_<%= i %>"
+								data-score="<%= checkForNullScore(teamScoreEntry) %>">
+								<p>
+									<% if (checkForNullScore(teamScoreEntry) > 0) {
+									%>
+									<%= teamScoreEntry['score'] %>
+									<% } %>
+								</p>
 							</td>
 							<td align="center" class="running-total" id="running_total_A_<%= i %>">
 								

@@ -130,7 +130,7 @@ $(function () {
 		
 		if (!$.isEmptyObject($(this).data()) && typeof $(this).data('score') != 'undefined') {
 			
-			var current_score = $(this).data()['score'];
+			var current_score = $(this).data('score') || $(this).attr('data-score');
 			var new_score = 0;
 			
 			if (current_score == 10) {
@@ -145,6 +145,9 @@ $(function () {
 			else if (current_score == 0) {
 				new_score = 10;
 			}
+			
+			console.log(current_score);
+			console.log(new_score);
 			
 			$(this).data('score', new_score);
 			$(this).find('p').html(new_score);
@@ -172,7 +175,7 @@ $(function () {
 				
 				if (!$.isEmptyObject(bonus_score_obj.data()) && typeof bonus_score_obj.data('score') != 'undefined') {
 					row_score += bonus_score_obj.data('score');
-					console.log(bonus_score_obj.data()['score']);
+					//console.log(bonus_score_obj.data()['score']);
 				}
 				
 				total_score += row_score;

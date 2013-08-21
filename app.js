@@ -133,3 +133,4 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect('/login');
 }
+

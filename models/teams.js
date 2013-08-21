@@ -9,7 +9,8 @@ var TeamSchema = new mongoose.Schema({
 	teamName: String,
 	teamRoster: [{type: ObjectId, ref: 'Player'}],
 	tournament: {type: ObjectId, ref: 'Tournament'},
-	allowedToEdit: [{type: ObjectId, ref: 'User'}]
+	allowedToEdit: [{type: ObjectId, ref: 'User'}],
+	scoreEntries: Array
 });
 
 var Team = mongoose.model('Team', TeamSchema);
