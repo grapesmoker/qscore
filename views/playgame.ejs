@@ -122,16 +122,34 @@
 							</td>
 						<%	
 							for (var j = 1; j < numPlayers2 + 1; j ++) {
+								var player = teams[0].teamRoster[j - 1];
+								var scoreEntry = und.findWhere(player.scoreEntries, {questionNum: i.toString()});
 						%>
 								<td align="center" class="pagination-centered player-score player-id-<%= teams[1].teamRoster[j -1]._id %>" 
-									data-question-num="<%= i %>" id="player_score_B_<%= i %>_<%= j %>">
-									
+									data-question-num="<%= i %>" id="player_score_B_<%= i %>_<%= j %>"
+									data-score="<%= checkForNullScore(scoreEntry) %>">
+									<p>
+										<% if (checkForNullScore(scoreEntry) > 0) {
+										%>
+										<%=	scoreEntry['score'] %>
+										<% }
+										%>
+									</p>
 								</td>
 						<%
 							}
+							
+							teamScoreEntry = und.findWhere(teams[0].scoreEntries, {questionNum: i.toString()});
 						%>
 							<td align="center" class="bonus-score team-id-<%= game.team2._id %>" 
-								data-question-num="<%= i %>" id="bonus_score_B_<%= i %>">
+								data-question-num="<%= i %>" id="bonus_score_B_<%= i %>"
+								data-score="<%= checkForNullScore(teamScoreEntry) %>">
+								<p>
+									<% if (checkForNullScore(teamScoreEntry) > 0) {
+									%>
+									<%= teamScoreEntry['score'] %>
+									<% } %>
+								</p>
 								
 							</td>
 							<td align="center" class="running-total" id="running_total_B_<%= i %>">
