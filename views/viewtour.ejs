@@ -78,7 +78,11 @@
 					if (!und.isUndefined(locals.games) && games) {
 					%>
 						<table class="table table-striped">
-							<caption>Games</caption>
+							<caption>Games
+								<a href="/newgame/<%= tournament._id%>">
+									<i class="icon-plus-sign"></i>
+								</a>
+							</caption>
 							<thead>
 								<tr>
 									<th>Round</th>

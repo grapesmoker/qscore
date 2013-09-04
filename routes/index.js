@@ -217,6 +217,39 @@ exports.newgame = function(req, res) {
 	
 };
 
+exports.newgame2 = function(req, res) {
+	var tourId = req.params['id'];
+	
+	console.log(tourId);
+	
+	Team.find({tournament: tourId}).populate('tournament').exec(function(err, teams) {
+		if (err || !teams) {
+			console.log(err);
+			res.render('newgame', {title: 'New Game', 
+				state: 'error', 
+				message: 'An error occurred! Could not retrieve teams!'});
+		}
+		else {
+			Tournament.findById(tourId, function(err, tournament) {
+				if (err || ! tournament) {
+					console.log(err);
+					res.render('newgame', {title: 'New Game', 
+						state: 'error', 
+						message: 'An error occurred! Could not retrieve tournament!'});
+				}
+				else {
+					console.log(teams);
+					res.render('newgame', {title: 'New Game',
+						state: 'success',
+						tournaments: [tournament],
+						teams: teams,
+						message: ''});
+				}
+			});
+		}
+	});
+}
+
 exports.newtour = function(req, res) {
 	
 	var message = '';

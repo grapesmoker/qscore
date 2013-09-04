@@ -13,7 +13,8 @@ var flash = require('connect-flash')
   , path = require('path')
   , forms = require('forms')
   , fields = forms.fields
-  , validators = forms.validators;
+  , validators = forms.validators
+  , cons = require('consolidate');
 
 var app = express();
 
@@ -38,6 +39,7 @@ db = mongojs(databaseUrl, collections);
 var User = require('./models/users.js').User;
 
 // all environments
+app.engine('html', cons.handlebars);
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -58,9 +60,6 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(id, done) {
-	/*db.users.find({_id: db.ObjectId(id)}, function(err, user) {
-		done(err, user);
-	});*/
 	User.findById(id, function(err, user) {
 		done(err, user);
 	});
@@ -103,7 +102,8 @@ app.get('/', routes.index);
 app.get('/addteam/:id', ensureAuthenticated, routes.addteam);
 app.post('/addteam', ensureAuthenticated, routes.addteam);
 app.get('/users', user.list);
-app.get('/newgame', ensureAuthenticated, routes.newgame);
+app.get('/newgame', routes.newgame);
+app.get('/newgame/:id', routes.newgame2);
 app.all('/newtour', ensureAuthenticated, routes.newtour);
 app.post('/playgame', routes.playgame);
 app.get('/playgame/:id', routes.playgame);

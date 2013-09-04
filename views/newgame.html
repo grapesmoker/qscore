@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<title>
+		{{ title }}
+    </title>
+    
+  </head>
+  <body>
+    <h1>
+    	{{ title }}
+    </h1>
+    <!-- menu header -->
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<!-- sidebar -->
+			<div class="span10">
+				
+				{{#if state }}
+					{{#if this == 'error'}}
+						<div class="alert alert-error">
+							{{ message }}
+						</div>
+					{{/if}}
+				{{/if}}
+				
+				<form class="form-inline" action="/playgame" method="post">
+					<legend>Select teams</legend>
+					<fieldset>
+						<div class="control-group">
+							<div class="controls">
+								<label for="team1">Team 1</label>
+								<select id="team1" name="team1">
+									{{#if teams }}
+										{{#each teams}}
+											<option value="{{ _id }}">{{ teamName }}</option>
+										{{/each}}
+									{{/if}}
+								</select>
+								<label for="team2">Team 2</label>
+								<select id="team2" name="team2">
+									{{#if teams }}
+										{{#each teams}}
+											<option value="{{ _id }}">{{ teamName }}</option>
+										{{/each}}
+									{{/if}}
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="tour">Tournament</label>
+							<div class="controls">
+								<select id="tour" name="tour">
+									{{#if tournaments }}
+										{{#each tournaments}}
+											<option value="{{ _id }}">{{ tourName }}</option>
+										{{/each}}
+									{{/if}}
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="round">Round</label>
+							<div class="controls">
+								<input type="number" id="round" name="round">
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="round">Room</label>
+							<div class="controls">
+								<input type="text" id="room" name="room">
+							</div>
+						</div>
+						<div class="control-group">
+							<label for="moderator">Moderator</label>
+							<div class="controls">
+								<input type="text" id="moderator" name="moderator">
+							</div>
+						</div>
+						
+						<div class="form-actions">
+            				<button type="submit" class="btn btn-primary">Start game</button>
+            				<button class="btn">Cancel</button>
+          				</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
