@@ -14,7 +14,8 @@ var flash = require('connect-flash')
   , forms = require('forms')
   , fields = forms.fields
   , validators = forms.validators
-  , cons = require('consolidate');
+  , cons = require('consolidate')
+  , fs = require('fs');
 
 var app = express();
 
@@ -27,6 +28,7 @@ bcrypt = require('bcrypt');
 und = require('underscore');
 moment = require('moment');
 async = require('async');
+hb = require('handlebars');
 
 databaseUrl = "localhost/qscore_db";
 collections = ['players', 'teams', 'games', 'tournaments', 'users', 'playerScores', 'teamScores'];
@@ -134,3 +136,6 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect('/login');
 }
 
+hb.registerPartial('header', fs.readFileSync('./views/header.html', 'utf8'));
+hb.registerPartial('sidebar', fs.readFileSync('./views/sidebar.html', 'utf8'));
+hb.registerPartial('menubar', fs.readFileSync('./views/sidebar.html', 'utf8'));
