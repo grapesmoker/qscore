@@ -44,7 +44,7 @@ var User = require('./models/users.js').User;
 app.engine('html', cons.handlebars);
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
+app.set('view engine', 'html');
 app.use(express.cookieParser());
 app.use(express.session({secret: '1234567890qwerty'}));
 app.use(express.favicon());
@@ -101,6 +101,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index);
+app.get('/alltours', routes.alltournaments);
 app.get('/addteam/:id', ensureAuthenticated, routes.addteam);
 app.post('/addteam', ensureAuthenticated, routes.addteam);
 app.get('/users', user.list);
@@ -138,4 +139,9 @@ function ensureAuthenticated(req, res, next) {
 
 hb.registerPartial('header', fs.readFileSync('./views/header.html', 'utf8'));
 hb.registerPartial('sidebar', fs.readFileSync('./views/sidebar.html', 'utf8'));
-hb.registerPartial('menubar', fs.readFileSync('./views/sidebar.html', 'utf8'));
+hb.registerPartial('menubar', fs.readFileSync('./views/menubar.html', 'utf8'));
+hb.registerPartial('errormsg', fs.readFileSync('./views/errormsg.html', 'utf8'));
+
+hb.registerHelper('momentFormat', function(date_time, format_string) {
+	return moment(date_time).format(format_string);
+});

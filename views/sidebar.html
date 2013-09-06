@@ -1,11 +1,14 @@
 
-<!--<div class="span2">
+<div class="span2 offset1">
 	<ul class="nav nav-list">
-    	<li><a href="/"><i class="icon-home"></i>Home</a></li>
-    	<li><a href="/register"><i class="icon-user"></i>Register</a></li>
-    	<li><a href="/login"><i class="icon-lock"></i>Login</a></li>
-    	<li><a href="/newgame/"><i class="icon-chevron-right"></i>New Game</a></li>
-    	<li><a href="/newtour/"><i class="icon-chevron-right"></i>New Tournament</a></li>
-    	<li><a href="/addteam/"><i class="icon-chevron-right"></i>Add Team</a></li>
+    	<li><a href="/"><i class="icon-fixed-width icon-home"></i>Home</a></li>
+    	{{#if user}}
+    		<li><a href="/alltours"><i class="pull-left icon-fixed-width icon-book"></i>Tournaments</a></li>
+    		<li><a href="/profile"><i class="pull-left icon-fixed-width icon-gears"></i>Profile</a></li>
+    		<li><a href="/logout"><i class="pull-left icon-fixed-width icon-lock"></i>Logout</a></li>
+    	{{else}}
+    		<li><a href="/register"><i class="pull-left icon-fixed-width icon-user"></i>Register</a></li>
+    		<li><a href="/login"><i class="pull-left icon-fixed-width icon-lock"></i>Login</a></li>
+    	{{/if}}
 	</ul>
-</div>-->
+</div>

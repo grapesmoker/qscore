@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+		{{ title }}
+    </title>
+    {{> header }}
+  </head>
+  <body>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			{{> sidebar}}
+			<div class="span8">
+				{{> errormsg }}
+				<form class="form-horizontal" action="/newtour" method="post">
+					<legend>New Tournament</legend>
+					<fieldset>
+						<div class="control-group">
+							<label class="control-label" for="tour-name">Tournament Name</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="tour-name" name="tourName">
+								<p class="help-block">
+									If your tournament part of a series, please 
+									use both name and number, e.g. Technophobia XII.
+								</p>							
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="tour-date">Date</label>
+							<div class="controls">
+								<input type="date" class="input-xlarge" id="tour-date" name="tourDate">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="tour-location">Location</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" id="tour-location" name="tourLocation">
+								<p class="help-block">The name of the host.</p>
+							</div>							
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="tour-address">Address</label>
+							<div class="controls">
+								<textarea class="input-xlarge" id="tour-address" name="tourAddress" rows="5"></textarea>
+								<p class="help-block">
+									The address of the location where the tournament is taking place.
+								</p>
+							</div>
+						</div>
+						<input type="hidden" name="returnTo" value="edittour">
+						<div class="form-actions">
+            				<button type="submit" class="btn btn-primary">Create tournament</button>
+            				<button class="btn">Cancel</button>
+          				</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

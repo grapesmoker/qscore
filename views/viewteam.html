@@ -7,14 +7,10 @@
     {{> header }}
   </head>
   <body>
-    <h1>
-    	{{ title }}
-    </h1>
-    {{> menubar }}
     <div class="container-fluid">
 		<div class="row-fluid">
 			{{> sidebar }}
-			<div class="span10">
+			<div class="span8">
 				{{> errormsg }}
 				<form class="form-horizontal" action="/saveteam" method="post" name="team-roster-form" id="team-roster-form">
 					<legend>View/Edit Team</legend>
@@ -22,9 +18,9 @@
 						<div class="control-group">
 							<label class="control-label" for="tour-name">Team Name</label>
 							<div class="controls">
-								<input type="text" class="input-xlarge" id="team-name" name="teamName" value="<%= team.teamName %>">
-								<input type="hidden" id="team-id" name="team-id" value="<%= team._id %>">
-								<input type="hidden" id="tour-id" name="tour-id" value="<%= team.tournament %>">
+								<input type="text" class="input-xlarge" id="team-name" name="teamName" value="{{ team.teamName }}">
+								<input type="hidden" id="team-id" name="team-id" value="{{ team._id }}">
+								<input type="hidden" id="tour-id" name="tour-id" value="{{ team.tournament }}">
 								<p class="help-block">
 									Team name, e.g. Maryland A
 								</p>							
@@ -35,17 +31,17 @@
 							<div class="controls" id="team-roster-div">
 								{{#with team}}
 									{{#each teamRoster}}
-										<p id="player-block-{{ index }}" class="player-block">
-											<input type="hidden" id="player-id-{{ index }}" 
-											name = "player-id-{{ index }}" value="{{ _id  }}">
-											<input type="text" id="first-name-{{ index }}" 
-											name="first-name-{{ index }}" placeholder="First name"
+										<p id="player-block-{{ @index }}" class="player-block">
+											<input type="hidden" id="player-id-{{ @index }}" 
+											name = "player-id-{{ @index }}" value="{{ _id  }}">
+											<input type="text" id="first-name-{{ @index }}" 
+											name="first-name-{{ @index }}" placeholder="First name"
 											value="{{ firstName }}">
-											<input type="text" id="last-name-{{ index }}" 
-											name="last-name-{{ index }}" placeholder="Last name"
+											<input type="text" id="last-name-{{ @index }}" 
+											name="last-name-{{ @index }}" placeholder="Last name"
 											value="{{ lastName }}">
 											<i class="icon-minus-sign delete-player" 
-											data-player-num="{{ index }}" id="delete-player-{{ index }}"></i>
+											data-player-num="{{ @index }}" id="delete-player-{{ @index }}"></i>
 										</p>
 									{{/each}}
 								{{/with}}

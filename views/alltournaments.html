@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	{{ title }}
+    </title>
+    {{> header}}
+  </head>
+  <body>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			{{> sidebar }}
+			<div class="span8">
+				{{> errormsg }}
+				<div class="hero-unit">
+					<p><h3>Your tournaments <a class="btn" href="/newtour"><i class="pull-left icon-plus"> New tournament</i></a></h3>
+						
+					</p>
+				</div>
+				{{#if tournaments}}
+					
+					{{#each tournaments}}
+						<p>
+							<a href="/viewtour/{{ _id }}">{{ tourName }}</a>
+						</p>
+					{{/each}}
+				{{/if}}
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

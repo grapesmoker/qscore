@@ -15,26 +15,35 @@ exports.index = function(req, res){
 	console.log('Authentication: ' + req.isAuthenticated());
 	// console.log(req.user)
 	
+	if (req.isAuthenticated()) {		
+		res.render('index', {title: 'QScore', state: 'success', tournaments: [], user: req.user});
+	}
+	else {
+		res.render('index', { title: 'QScore', tournaments: []});
+	}
+};
+
+exports.alltournaments = function(req, res) {
 	if (req.isAuthenticated()) {
 		var userId = req.user._id.toString();
 		// console.log(req.user);
 		// console.log(userId);
 		Tournament.find({createdBy: userId}, function(err, tournaments) {
 			if (err) {
-				res.render('index', {title: 'QScore', state: 'error', message: 'An error occurred!'});
+				res.render('alltournaments', {title: 'QScore', state: 'error', message: 'An error occurred!'});
 			}
 			else if (!tournaments) {
-				res.render('index', {title: 'QScore', state: 'error', message: 'Could not retrieve tournaments!'});
+				res.render('alltournaments', {title: 'QScore', state: 'error', message: 'Could not retrieve tournaments!'});
 			}
 			else {
-				res.render('index', {title: 'QScore', state: 'success', tournaments: tournaments, user: req.user})
+				res.render('alltournaments', {title: 'QScore', state: 'success', tournaments: tournaments, user: req.user})
 			}
 		});
 	}
 	else {
-		res.render('index', { title: 'QScore', tournaments: []});
+		res.render('alltournaments', { title: 'QScore', tournaments: []});
 	}
-};
+}
 
 exports.addteam = function(req, res) {
 	
@@ -311,7 +320,7 @@ exports.newtour = function(req, res) {
 			});
 	}
 	else {
-		res.render('newtour', {title: 'New Tournament', state: state, message: message});
+		res.render('newtour', {title: 'New Tournament', state: state, message: message, user: req.user});
 	}
 };
 
@@ -482,7 +491,7 @@ exports.viewteam = function(req, res) {
 						}
 					});
 				}
-				res.render('viewteam', {title: 'View/Edit Team', state: 'success', team: team, readOnly: readOnly});
+				res.render('viewteam', {title: 'View/Edit Team', state: 'success', team: team, user: req.user, readOnly: readOnly});
 			}
 		});
 	}

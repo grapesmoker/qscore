@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	{{ title }}
+    </title>
+    {{> header }}
+  </head>
+  <body>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			{{> sidebar }}
+			<div class="span8">
+				{{> errormsg }}
+				{{#if tournament}}
+					<div class="hero-unit">
+						<p>
+							
+							<div class="btn-group">
+								<a class="btn btn-large dropdown-toggle" data-toggle="dropdown" href="#">
+    								{{ tournament.tourName }}
+    								<span class="caret"></span>
+  								</a>
+  								<ul class="dropdown-menu">
+									<li><a href="/edittour/{{ tournament._id }}">Edit tournament details</a></li>
+									<li><a href="/addteam/{{ tournament._id }}">New team</a></li>
+									<li><a href="/newgame/{{ tournament._id }}">New game</a></li>
+									<li><a href="#">Add moderator</a></li>
+								</ul>
+							</div>
+							<div class="text-left">{{momentFormat tournament.tourDate "YYYY-MM-DD"}}</div>
+							<div class="text-left">{{ tournament.tourLocation }}</div>
+							<div class="text-left">{{ tournament.tourAddress }}</div>
+						</p>
+						<input type="hidden" id="tour-id" value="{{ tournament._id }}">
+					</div>
+					{{#if teams}}
+						<table class="table table-striped">
+							<caption>
+								Participating Teams
+								<a href="/addteam/{{ tournament._id}}">
+									<i class="icon-plus-sign"></i>
+								</a>
+							</caption>
+							<thead>
+								<tr>
+									<th>Team Name</th>
+									<th>Wins</th>
+									<th>Losses</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							{{#each teams}}
+								<tr>
+									<td>{{ teamName }}</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>
+										<a href="/viewteam/{{ _id }}">
+											<i class="icon-edit"></i>
+										</a>
+									</td>
+								</tr>
+							{{/each}}
+							</tbody>
+						</table>
+					{{/if}}
+					{{#if games}}
+						<table class="table table-striped">
+							<caption>Games
+								<a href="/newgame/{{ tournament._id}}">
+									<i class="icon-plus-sign"></i>
+								</a>
+							</caption>
+							<thead>
+								<tr>
+									<th>Round</th>
+									<th>Team 1</th>
+									<th>Team 2</th>
+									<th>Score</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							{{#each games}}
+								<tr>
+									<td>{{ round }}</td>
+									<td>{{ team1.teamName }}</td>
+									<td>{{ team2.teamName }}</td>
+									<td>&nbsp;</td>
+									<td><a href="/playgame/{{ _id }}">
+										<i class="icon-edit"></i>
+									</a></td>
+								</tr>
+							{{/each}}
+							</tbody>
+						</table>
+					{{/if}}
+				{{/if}}
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

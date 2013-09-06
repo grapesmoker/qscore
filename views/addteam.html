@@ -2,15 +2,13 @@
 <html>
 	<head>
 		<title> {{ title }} </title>
-		<!-- <% include header %> -->
+		{{> header }}
 	</head>
 	<body>
-		<h1> {{ title }} </h1>
-		<!-- <% include menubar %> -->
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<!-- <% include sidebar %> -->
-				<div class="span10">
+				{{> sidebar }}
+				<div class="span8">
 					{{> errormsg }}
 					<form class="form-horizontal" action="/addteam" method="post">
 						<fieldset>
