@@ -15,7 +15,12 @@
     "underscore": "*",
     "passport": "*",
     "passport-local": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "forms": "*",
+    "consolidate": "*",
+    "handlebars": "*",
+    "async": "*",
+    "mongojs": "*"
   },
   "author": {
 	  "name": "Jerry Vinokurov",
