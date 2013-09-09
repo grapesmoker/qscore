@@ -287,6 +287,51 @@ $(function () {
 		var num_players = $('.player-block').size();
 		$('#num-players').val(num_players);
 	});
+	
+	$('#add-moderator-dialog').dialog({
+		autoOpen: false,
+		modal: true,
+		buttons: {
+			"Add moderator": function () {
+				// do some stuff related to adding the moderator here
+			},
+			Cancel: function() {
+				$(this).dialog('close');
+			}
+		},
+		close: function() {
+			// do nothing
+		}
+	});
+	
+	$('#add-moderator-dialog * #search-term').autocomplete({
+		source: function(request, response) {
+			var mods = [];
+			
+			$.getJSON('/finduser', request, function(data) {
+				console.log(data);
+				$.each(data, function(index, item) {
+					mods.push(item.firstName + ' ' + item.lastName + ' - ' + item.username);
+				});
+				
+				console.log(mods);
+				response(mods);
+			});
+		},
+		minLength: 2,
+		select: function(event, ui) {
+			/*console.log($('#add-moderator-dialog * #username').val())
+			$('#add-moderator-dialog * #username').val(ui.item.username);
+			console.log(ui.item.firstName);
+			$('#add-moderator-dialog * #search-term').val(ui.item.firstName +
+					' ' + ui.item.lastName + ' - ' + ui.item.username);*/
+			console.log(ui.item);
+		}
+	});
 
+	$('#add-moderator').click(function() {
+		$('#add-moderator-dialog').dialog('open');
+	});
+	
 });
 

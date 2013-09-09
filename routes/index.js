@@ -456,13 +456,13 @@ exports.edittour = function(req, res) {
 		Tournament.findOne({_id: tourId}, function(err, tournament) {
 			if (err) {
 				console.log(err);
-				res.render('edittour', {title: 'Edit Tournament Info', state: 'error', message: 'Error occurred!'});
+				res.render('edittour', {title: 'Edit Tournament Info', state: 'error', message: 'Error occurred!', user: req.user});
 			}
 			else if (!tournament) {
-				res.render('edittour', {title: 'Edit Tournament Info', state: 'error', message: 'Tournament not found!'});
+				res.render('edittour', {title: 'Edit Tournament Info', state: 'error', message: 'Tournament not found!', user: req.user});
 			}
 			else {
-				res.render('edittour', {title: 'Edit Tournament Info', state: 'success', tournament: tournament});
+				res.render('edittour', {title: 'Edit Tournament Info', state: 'success', tournament: tournament, user: req.user});
 			}
 		});
 	}

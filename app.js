@@ -125,6 +125,7 @@ app.get('/viewteam/:id', routes.viewteam);
 app.post('/saveteam', routes.saveteam);
 app.post('/deleteplayer', routes.deleteplayer);
 app.post('/get_team_from_id', qscore_ajax.get_team_from_id);
+app.all('/finduser', qscore_ajax.find_user);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

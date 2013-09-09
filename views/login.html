@@ -7,7 +7,8 @@
 	<body>
 		<div class="container-fluid">
 			<div class="row-fluid">
-				<div class="span8 offset2">
+				{{> sidebar }}
+				<div class="span8">
 					{{> errormsg }}
 					<form method="post" action="/login" class="form-horizontal">
 						<fieldset>

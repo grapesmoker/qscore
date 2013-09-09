@@ -25,7 +25,7 @@
 									<li><a href="/edittour/{{ tournament._id }}">Edit tournament details</a></li>
 									<li><a href="/addteam/{{ tournament._id }}">New team</a></li>
 									<li><a href="/newgame/{{ tournament._id }}">New game</a></li>
-									<li><a href="#">Add moderator</a></li>
+									<li><a href="#" id="add-moderator">Add moderator</a></li>
 								</ul>
 							</div>
 							<div class="text-left">{{momentFormat tournament.tourDate "YYYY-MM-DD"}}</div>
@@ -101,5 +101,23 @@
 			</div>
 		</div>
 	</div>
+	
+	<div id="add-moderator-dialog" class="qscore-dialog">
+		<form name="add-moderator-form" id="add-moderator-form">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label" for="search-term">Search</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" name="search-term" id="search-term">
+					</div>
+					<p class="help-block">
+						Search by username, first name, or last name
+					</p>
+				</div>
+				<input type="hidden" name="username" id="username" value="foo">
+			</fieldset>
+		</form>
+	</div>
+	
   </body>
 </html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	{{ title }}
+    </title>
+ 	{{> header }}
+  </head>
+  <body>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			{{> sidebar }}
+			<div class="span8">
+				{{> errormsg }}
+				<form method="post" action="/register" class="form-horizontal">
+					<fieldset>
+						<legend>Registration</legend>
+						<div class="control-group">
+							<label class="control-label" for="username">Username</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" name="username" id="username">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="password">Password</label>
+							<div class="controls">
+								<input type="password" class="input-xlarge" name="password" id="password">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="password">Confirm Password</label>
+							<div class="controls">
+								<input type="password" class="input-xlarge" name="confirm_password" id="confirm_password">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="Email">Email</label>
+							<div class="controls">
+								<input type="text" class="input-xlarge" name="email" id="email">
+							</div>
+						</div>
+						<div class="form-actions">
+            				<button type="submit" class="btn btn-primary"><i class="icon-lock"></i>Register</button>
+            				<button class="btn">Cancel</button>
+          				</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
