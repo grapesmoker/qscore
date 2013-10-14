@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+    	{{ title }}
+    </title>
+    {{> header }}
+  </head>
+  <body>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			{{> sidebar }}
+			<div class="span8">
+				<h3>
+					{{ game.team1.teamName }} vs. {{ game.team2.teamName }}
+				</h3>
+				<a class="btn btn-primary" href="#" id="savegame" data-game-id="{{ game._id }}">
+					<i class="icon-file pull-left"></i>Save game</a>
+				<table class="table table-striped" id="score-table">
+					<thead>
+						<tr>
+							<th>Question</th>
+							<th class="team-name" data-team-id="{{ game.team1._id }}"
+								colspan="{{add game.team1.teamRoster.length 2}}">{{ game.team1.teamName }}</th>
+							<th class="team-name" data-team-id="{{ game.team2._id }}" 
+								colspan="{{add game.team2.teamRoster.length 2}}">{{ game.team2.teamName }}</th>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							
+							{{#each teams.0.teamRoster }}
+								<th class="user-name" data-user-id="{{ _id }}">{{ firstName }} {{ lastName }}</th>
+							{{/each}}
+							
+							<th>Bonus Points</th>
+							<th>Running Total</th>
+							
+							{{#each teams.1.teamRoster }}
+								<th class="user-name" data-user-id="{{ _id }}">{{ firstName }} {{ lastName }}</th>
+							{{/each}}
+							
+							<th>Bonus Points</th>
+							<th>Running Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{{ scoreTable game teams }}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+  </body>
+</html>

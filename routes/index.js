@@ -36,14 +36,14 @@ exports.alltournaments = function(req, res) {
 				res.render('alltournaments', {title: 'QScore', state: 'error', message: 'Could not retrieve tournaments!'});
 			}
 			else {
-				res.render('alltournaments', {title: 'QScore', state: 'success', tournaments: tournaments, user: req.user})
+				res.render('alltournaments', {title: 'QScore', state: 'success', tournaments: tournaments, user: req.user});
 			}
 		});
 	}
 	else {
 		res.render('alltournaments', { title: 'QScore', tournaments: []});
 	}
-}
+};
 
 exports.addteam = function(req, res) {
 	
@@ -126,7 +126,7 @@ exports.addteam = function(req, res) {
 		});
 	}
 	
-}
+};
 
 
 exports.savegame = function(req, res) {
@@ -163,7 +163,7 @@ exports.savegame = function(req, res) {
 									res.json({result: 'success'});
 								}
 							});
-					}
+				}
 		});
 	});
 	// This is decidedly *NOT* the right paradigm, but I'm too lazy to fix it right now
@@ -194,7 +194,7 @@ exports.savegame = function(req, res) {
 					}
 				});
 	});
-}
+};
 
 exports.newgame = function(req, res) {
 	

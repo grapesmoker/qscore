@@ -12,6 +12,7 @@ var GameSchema = new mongoose.Schema({
 	round: Number,
 	room: String,
 	moderator: String,
+	tossupsHeard: Number,
 	createdBy: {type: ObjectId, ref: 'User'}
 });
 

@@ -29,11 +29,13 @@ und = require('underscore');
 moment = require('moment');
 async = require('async');
 hb = require('handlebars');
+swag = require('swag');
 
 databaseUrl = "localhost/qscore_db";
 collections = ['players', 'teams', 'games', 'tournaments', 'users', 'playerScores', 'teamScores'];
 mongojs = require('mongojs');
 db = mongojs(databaseUrl, collections);
+swag.registerHelpers(hb);
 
 //console.log(db);
 //db = require('mongojs').connect(databaseUrl, collections);
@@ -131,6 +133,15 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+/* Helper functions */
+
+function checkForNullScore(entry) {
+	
+	if (und.isUndefined(entry) || und.isNull(entry) || und.isNull(entry['score'])) {
+		return 0;
+	} else { return entry['score'];}
+};
+
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
@@ -138,11 +149,142 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect('/login');
 }
 
+/* Handlebars partials */
+
 hb.registerPartial('header', fs.readFileSync('./views/header.html', 'utf8'));
 hb.registerPartial('sidebar', fs.readFileSync('./views/sidebar.html', 'utf8'));
 hb.registerPartial('menubar', fs.readFileSync('./views/menubar.html', 'utf8'));
 hb.registerPartial('errormsg', fs.readFileSync('./views/errormsg.html', 'utf8'));
 
+/* Handlebars helpers 
+ * 
+ * (probably should be broken out into own file?)
+ * 
+ */
+
+var Player = require('./models/players').Player;
+
 hb.registerHelper('momentFormat', function(date_time, format_string) {
 	return moment(date_time).format(format_string);
+});
+
+hb.registerHelper('dotimes', function(i, options) {
+	var buffer = '';
+	
+	for (var n = 0; n < i; n++) {
+		buffer += options.fn(n);
+	}
+	
+	return buffer;
+});
+
+hb.registerHelper('scoreTable', function(game, teams){
+	
+	var ret = '';
+	
+	var numPlayers1 = game.team1.teamRoster.length;
+	var numPlayers2 = game.team2.teamRoster.length;
+						
+	console.log("current game" + game);
+	
+	console.log(numPlayers1);
+	console.log(numPlayers2);
+	
+	
+	var runningScore1 = 0;
+	var runningScore2 = 0;
+	
+	for (var i = 1; i < 31; i++) {
+		ret += '<tr><td>' + i + '</td>';
+		
+		var lineScore1 = 0;
+		var lineScore2 = 0;
+		
+		for (var j = 1; j < numPlayers1 + 1; j ++) {
+			var player = teams[0].teamRoster[j - 1];
+			//console.log(player);
+			
+			var scoreEntry = und.findWhere(player.scoreEntries, {questionNum: i.toString()});
+			// console.log(scoreEntry);
+			
+			ret += '<td align="center" class="player-score player-id-' + player._id + '"\
+					data-question-num="' + i + '" id="player_score_A_' + i + '_' + j + '"\
+					data-score="' + checkForNullScore(scoreEntry) + '">';
+			
+			ret += '<p>';
+			if (checkForNullScore(scoreEntry) > 0) {
+				ret += scoreEntry['score'];
+				lineScore1 += parseInt(scoreEntry['score']);
+			};
+			ret += '</p></td>';
+		}
+		
+			
+		var teamScoreEntry = und.findWhere(teams[0].scoreEntries, {questionNum: i.toString()});
+			
+		ret += '<td align="center" class="bonus-score team-id-' + game.team1._id + '"\
+				data-question-num="' + i + '" id="bonus_score_A_' + i + '"\
+				data-score="' + checkForNullScore(teamScoreEntry) + '">';
+				
+		ret += '<p>';
+		if (checkForNullScore(teamScoreEntry) > 0) {
+			ret += teamScoreEntry['score'];
+			lineScore1 += parseInt(teamScoreEntry['score']);
+		}
+		
+		runningScore1 += lineScore1;
+							
+		ret += '</p></td>';
+		
+		if (lineScore1 > 0) {
+			ret += '<td align="center" class="running-total" id="running_total_A_' + i +'">' + runningScore1 + '</td>';
+		}
+		else {
+			ret += '<td align="center" class="running-total" id="running_total_A_' + i +'"></td>';
+		}
+		
+		for (var j = 1; j < numPlayers2 + 1; j ++) {
+			var player = teams[1].teamRoster[j - 1];
+			var scoreEntry = und.findWhere(player.scoreEntries, {questionNum: i.toString()});
+			
+			ret += '<td align="center" class="player-score player-id-' + player._id + '"\
+					data-question-num="' + i + '" id="player_score_B_' + i + '_' + j + '"\
+					data-score="' + checkForNullScore(scoreEntry) + '">';
+			
+			ret += '<p>';
+			if (checkForNullScore(scoreEntry) > 0) {
+				ret += scoreEntry['score'];
+				lineScore2 += parseInt(scoreEntry['score']);
+			};
+			ret += '</p></td>';
+		}
+		
+		var teamScoreEntry = und.findWhere(game.team1.scoreEntries, {questionNum: i.toString()});
+		
+		ret += '<td align="center" class="bonus-score team-id-' + game.team2._id + '"\
+				data-question-num="' + i + '" id="bonus_score_B_' + i + '"\
+				data-score="' + checkForNullScore(teamScoreEntry) + '">';
+				
+		ret += '<p>';
+		if (checkForNullScore(teamScoreEntry) > 0) {
+			ret += teamScoreEntry['score'];
+			lineScore2 += parseInt(teamScoreEntry['score']);
+		}
+				
+		runningScore2 += lineScore2;
+					
+		ret += '</p></td>';
+		
+		if (lineScore2 > 0) {
+			ret += '<td align="center" class="running-total" id="running_total_B_' + i +'">' + runningScore2 + '</td>';
+		}
+		else {
+			ret += '<td align="center" class="running-total" id="running_total_B_' + i +'"></td>';
+		}
+		
+		
+		ret += '</tr>';
+	}
+	
+	return ret;
 });
