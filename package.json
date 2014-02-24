@@ -20,7 +20,10 @@
     "consolidate": "*",
     "handlebars": "*",
     "async": "*",
-    "mongojs": "*"
+    "mongojs": "*",
+    "connect-flash": "*",
+    "mongoose-text-search": "*",
+    "swag": "*"
   },
   "author": {
 	  "name": "Jerry Vinokurov",
